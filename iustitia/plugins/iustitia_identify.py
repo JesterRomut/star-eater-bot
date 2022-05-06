@@ -13,8 +13,8 @@ from nonebot.params import ShellCommandArgs
 from nonebot.rule import ArgumentParser, Namespace
 from nonebot.exception import ParserExit
 # from aiocqhttp import MessageSegment
-from nonebot.adapters.onebot.v11 import MessageSegment
-from .. import imagelib
+from nonebot.adapters.onebot.v11 import MessageSegment, Message
+from ..imagelib import imgresize
 
 __plugin_name__ = '一眼丁真'
 __plugin_usage__ = """输入 !鉴定 !identify !一眼丁真 , 鉴定为: bot
@@ -70,7 +70,7 @@ async def _(matcher: Matcher, args: Namespace = ShellCommandArgs()):
     def _hexstrip(c):
         return "#" + c if c[0] != "#" else c
 
-    def _create_identify(name, desc, fcolor, fborder_color, image_url):
+    def _create_identify(name, desc, fcolor, fborder_color, h_image):
         # img process
         with Image.open(f"{config.static_dir}/images/customidentify.JPG") as image:
             font_dir = f"{config.static_dir}/fonts/NotoSansSC-Regular.otf"
@@ -105,12 +105,11 @@ async def _(matcher: Matcher, args: Namespace = ShellCommandArgs()):
                       stroke_width=border, stroke_fill=fborder_color)
 
             # head image
-            if image_url is not None:
-                headbyte = BytesIO(image_url.content)
-                with Image.open(headbyte) as head:
+            if h_image is not None:
+                with h_image as head:
                     pos = (530, 622,)
                     headstrip = head.convert('RGBA')
-                    headstrip = imagelib.resize(headstrip, 600)
+                    headstrip = imgresize(headstrip, 600)
                     # headstrip = headstrip.resize(size=(int(w / mul), int(h / mul),), reducing_gap=1.01, resample=0, )
                     w, h = headstrip.size
                     # headstrip.save('headstrip.png')
@@ -119,22 +118,36 @@ async def _(matcher: Matcher, args: Namespace = ShellCommandArgs()):
                                 mask=headstrip.split()[3])
 
             buff = BytesIO()
-            image.save(buff, 'jpeg')
+            image.save(buff, 'jpeg', quality=80)
             return b64encode(buff.getvalue()).decode()
 
     # request
     if args.image is not None:
-        url = str(args.image)
+        murl = Message(args.image)
+
+        # get url
+        for i in murl:
+            if i.type == "image":
+                url = i.data["url"]
+                break
+        else:
+            url = str(args.image).strip()
+
+        res = None
         try:
             header = {
                 "User-Agent": ua.random
             }
-            headimage = requests.get(url, headers=header)
-            headimage.raise_for_status()
+            res = requests.get(url, headers=header)
+            res.raise_for_status()
         except requests.HTTPError:
-            await session.finish(f"invalid image url: {headimage.status_code}")
+            await matcher.finish(f"invalid image url: {res.status_code}")
         except requests.RequestException:
-            await session.finish("get image failed")
+            await matcher.finish("get image failed")
+        if int(res.headers['Content-length']) > 1048576:  # 1 MB
+            await matcher.finish("image too big")
+
+        headimage = Image.open(BytesIO(res.content))
     try:
         color = ImageColor.getcolor(_hexstrip(args.color), "RGB")
         border_color = ImageColor.getcolor(_hexstrip(args.border), "RGB") if args.border is not None else None
