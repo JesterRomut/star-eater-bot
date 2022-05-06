@@ -14,6 +14,7 @@ from nonebot.rule import ArgumentParser, Namespace
 from nonebot.exception import ParserExit
 # from aiocqhttp import MessageSegment
 from nonebot.adapters.onebot.v11 import MessageSegment
+from .. import imagelib
 
 __plugin_name__ = '一眼丁真'
 __plugin_usage__ = """输入 !鉴定 !identify !一眼丁真 , 鉴定为: bot
@@ -107,12 +108,10 @@ async def _(matcher: Matcher, args: Namespace = ShellCommandArgs()):
             if image_url is not None:
                 headbyte = BytesIO(image_url.content)
                 with Image.open(headbyte) as head:
-                    size = 600
                     pos = (530, 622,)
                     headstrip = head.convert('RGBA')
-                    w, h = headstrip.size
-                    mul = max([w, h]) / size
-                    headstrip = headstrip.resize(size=(int(w / mul), int(h / mul),), reducing_gap=1.01, resample=0, )
+                    headstrip = imagelib.resize(headstrip, 600)
+                    # headstrip = headstrip.resize(size=(int(w / mul), int(h / mul),), reducing_gap=1.01, resample=0, )
                     w, h = headstrip.size
                     # headstrip.save('headstrip.png')
                     image.paste(headstrip,
