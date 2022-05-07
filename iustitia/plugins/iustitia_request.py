@@ -44,16 +44,19 @@ async def friendhandle(bot: Bot, event: FriendRequestEvent):
         await event.approve(bot)
     except ActionFailed:
         pass
+    else:
+        logger.info("Added %s to friends" % event.user_id)
 
 
 @group.handle()
 async def grouphandle(bot: Bot, event: GroupRequestEvent):
     if event.sub_type == "invite":
-        logger.info("Joined group: %s" % event.group_id)
         try:
             await event.approve(bot)
         except ActionFailed:
-            pass
+            raise
+        else:
+            logger.info("Joined group: %s" % event.group_id)
 
 
 @poke.handle()

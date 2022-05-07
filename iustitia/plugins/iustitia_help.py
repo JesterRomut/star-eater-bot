@@ -18,7 +18,7 @@ def _get_pattr(plugin: Plugin, attr: str):
 @helpcommand.handle()
 async def _(matcher: Matcher, arg: Message = CommandArg()):
     plugins = list(filter(lambda x: _get_pattr(x, "__plugin_name__"), get_loaded_plugins()))
-    arg = str(arg).strip().lower()
+    arg = arg.extract_plain_text().strip().lower()
     if not arg:
         await matcher.finish(
             '迄今为止包含的要素:\n(输入!help <要素名>查看详细)\n' + '\n'.join(_get_pattr(p, "__plugin_name__") for p in plugins))

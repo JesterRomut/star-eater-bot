@@ -1,5 +1,5 @@
 from PIL import Image
-from ..imagelib import imgresize, TransparentAnimatedGifConverter
+from ..imagelib import imgresize
 from nonebot import on_shell_command, get_driver
 from nonebot.adapters.onebot.v11 import MessageSegment, Message
 from nonebot.exception import ParserExit
@@ -35,7 +35,9 @@ async def _(matcher: Matcher, args: Namespace = ShellCommandArgs()):
         fdir = f"{config.static_dir}/images/rua/"
         isize = [(350, 350), (372, 305), (395, 283), (380, 305), (350, 372)]
         # ipos = [(50, 150), (28, 195), (5, 217), (5, 195), (50, 128)]
-        ipos = [(60, 160), (38, 205), (15, 227), (15, 205), (60, 138)]
+        # ipos = [(60, 160), (38, 205), (15, 227), (15, 205), (60, 138)]
+        # (235, 335)
+        ipos = [(60, 150), (49, 195), (38, 217), (45, 195), (60, 128)]
         gif = []
 
         size = 350
@@ -49,13 +51,18 @@ async def _(matcher: Matcher, args: Namespace = ShellCommandArgs()):
             hand = hand.convert("RGBA")
             fimage = image.resize(isize[i], reducing_gap=1.01, resample=0, )
             frame.paste(fimage, ipos[i], mask=fimage.split()[3])
-            frame.paste(hand, mask=hand.split()[3])
-            converter = TransparentAnimatedGifConverter(img_rgba=frame)
-            gif.append(converter.process())  # transparency=255,
+            frame.paste(hand, (0, -20), mask=hand.split()[3])
+            # converter = TransparentAnimatedGifConverter(img_rgba=frame)
+            # gif.append(converter.process())  # transparency=255,
+            mask = frame.split()[3]
+            mask = Image.eval(mask, lambda a: 255 if a <= 50 else 0)
+            frame = frame.convert('RGB').convert('P', palette=Image.ADAPTIVE, colors=255)
+            frame.paste(255, mask)
+            gif.append(frame)
 
         buff = BytesIO()
         gif[0].save(fp=buff, format="gif", save_all=True, append_images=gif, optimize=True,
-                    duration=25, loop=0, disposal=2, transparency=0, quality=80)
+                    duration=25, loop=0, disposal=2, transparency=255, quality=80)
         return b64encode(buff.getvalue()).decode()
 
     # draedon = Image.open(f"{config.static_dir}/images/Draedon.png")

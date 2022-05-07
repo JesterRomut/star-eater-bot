@@ -12,7 +12,6 @@ from nonebot.matcher import Matcher
 from nonebot.params import ShellCommandArgs
 from nonebot.rule import ArgumentParser, Namespace
 from nonebot.exception import ParserExit
-# from aiocqhttp import MessageSegment
 from nonebot.adapters.onebot.v11 import MessageSegment, Message
 from ..imagelib import imgresize
 
