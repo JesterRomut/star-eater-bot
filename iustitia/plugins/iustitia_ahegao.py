@@ -1,6 +1,8 @@
 from nonebot.adapters.onebot.v11 import MessageSegment
 from nonebot import on_command, get_driver
 from nonebot.matcher import Matcher
+from typing import Union
+from nonebot.adapters.onebot.v11 import PrivateMessageEvent, GroupMessageEvent
 import os
 
 __plugin_name__ = '目力娇喘'
@@ -21,15 +23,15 @@ def _get_record(file):
 
 
 @ahegao.handle()
-async def _(matcher: Matcher):
+async def _(matcher: Matcher, _: Union[PrivateMessageEvent, GroupMessageEvent]):
     await matcher.finish(_get_record("senpaiRoar.mp3"))
 
 
 @draedonlaugh.handle()
-async def _(matcher: Matcher):
+async def _(matcher: Matcher, _: Union[PrivateMessageEvent, GroupMessageEvent]):
     await matcher.finish(_get_record("DraedonLaugh.wav"))
 
 
 @kidscream.handle()
-async def _(matcher: Matcher):
+async def _(matcher: Matcher, _: Union[PrivateMessageEvent, GroupMessageEvent]):
     await matcher.finish(_get_record("kidscream.mp3"))

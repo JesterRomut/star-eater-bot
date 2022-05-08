@@ -14,6 +14,7 @@ from nonebot.rule import ArgumentParser, Namespace
 from nonebot.exception import ParserExit
 from nonebot.adapters.onebot.v11 import MessageSegment, Message
 from ..imagelib import imgresize
+from ..iustitia.identify import identify as createidentify
 
 __plugin_name__ = '一眼丁真'
 __plugin_usage__ = """输入 !鉴定 !identify !一眼丁真 , 鉴定为: bot
@@ -69,57 +70,6 @@ async def _(matcher: Matcher, args: Namespace = ShellCommandArgs()):
     def _hexstrip(c):
         return "#" + c if c[0] != "#" else c
 
-    def _create_identify(name, desc, fcolor, fborder_color, h_image):
-        # img process
-        with Image.open(f"{config.static_dir}/images/customidentify.JPG") as image:
-            font_dir = f"{config.static_dir}/fonts/NotoSansSC-Regular.otf"
-
-            draw = ImageDraw.ImageDraw(image)
-            border = 5 if fborder_color else 0
-
-            # text
-            def _get_size(target_width):
-                s = 0
-                while True:
-                    f = ImageFont.truetype(font_dir, s)
-                    if f.getsize(desc)[0] < target_width:
-                        s += 1
-                    else:
-                        break
-                return s
-
-            if name is not None:
-                font_title = ImageFont.truetype(font_dir, 100)
-                # size = int(2160 / _get_exact_length(desc))
-                y = 1250
-                draw.text((540, 1050), name, fill=fcolor, anchor="ms", font=font_title,
-                          stroke_width=border, stroke_fill=fborder_color)
-            else:
-                # size = int(2160 / _get_exact_length(desc))
-                y = 1200
-            target = 1000
-
-            font_result = ImageFont.truetype(font_dir, _get_size(target))
-            draw.text((540, y), desc, fill=fcolor, anchor="ms", font=font_result,
-                      stroke_width=border, stroke_fill=fborder_color)
-
-            # head image
-            if h_image is not None:
-                with h_image as head:
-                    pos = (530, 622,)
-                    headstrip = head.convert('RGBA')
-                    headstrip = imgresize(headstrip, 600)
-                    # headstrip = headstrip.resize(size=(int(w / mul), int(h / mul),), reducing_gap=1.01, resample=0, )
-                    w, h = headstrip.size
-                    # headstrip.save('headstrip.png')
-                    image.paste(headstrip,
-                                box=(pos[0] - int(w / 2), pos[1] - int(h / 2)),
-                                mask=headstrip.split()[3])
-
-            buff = BytesIO()
-            image.save(buff, 'jpeg', quality=80)
-            return b64encode(buff.getvalue()).decode()
-
     # request
     if args.image is not None:
         murl = Message(args.image)
@@ -157,6 +107,8 @@ async def _(matcher: Matcher, args: Namespace = ShellCommandArgs()):
         if title[-2::1] != "丁真":
             title += "丁真"
 
+    img = createidentify(title=title, desc=result, color=color, border=border_color, headimage=headimage)
     await matcher.finish(
-        MessageSegment.image(f"base64://{_create_identify(title, result, color, border_color, headimage)}")
+        # MessageSegment.image(f"base64://{_create_identify(title, result, color, border_color, headimage)}")
+        MessageSegment.image(f"base64://{img}")
     )

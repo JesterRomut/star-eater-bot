@@ -28,6 +28,8 @@ whisper = on_shell_command("whisper", parser=w_parser, aliases={"私聊", "私�
 
 leave = on_command("leave", aliases={"退群", "退出", }, permission=SUPERUSER, block=True)
 
+recall = on_command("recall", aliases={"撤回", }, permission=SUPERUSER, block=True)
+
 
 @rename.handle()
 async def _(matcher: Matcher, _: ParserExit = ShellCommandArgs()):
@@ -146,4 +148,13 @@ async def _(bot: Bot, matcher: Matcher, event: Union[PrivateMessageEvent, GroupM
         await _leavegroup(bot, group_id, user_id)
 
 
-
+@recall.handle()
+async def _(bot: Bot, event: Union[PrivateMessageEvent, GroupMessageEvent], matcher: Matcher):
+    if isinstance(event, GroupMessageEvent):
+        if event.reply:
+            msg_id = event.reply.message_id
+            try:
+                await bot.delete_msg(message_id=msg_id)
+                return
+            except ActionFailed:
+                await matcher.finish("recall failed")

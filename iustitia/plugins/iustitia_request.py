@@ -37,15 +37,15 @@ poke = on_notice(rule=_poke)
 nlp = on_message(rule=to_me(), block=True, priority=100)
 
 
-@friend.handle()
-async def friendhandle(bot: Bot, event: FriendRequestEvent):
-    logger.info("Added %s to friends" % event.user_id)
-    try:
-        await event.approve(bot)
-    except ActionFailed:
-        pass
-    else:
-        logger.info("Added %s to friends" % event.user_id)
+# @friend.handle()
+# async def friendhandle(bot: Bot, event: FriendRequestEvent):
+#     logger.info("Added %s to friends" % event.user_id)
+#     try:
+#         await event.approve(bot)
+#     except ActionFailed:
+#         pass
+#     else:
+#         logger.info("Added %s to friends" % event.user_id)
 
 
 @group.handle()
@@ -62,7 +62,6 @@ async def grouphandle(bot: Bot, event: GroupRequestEvent):
 @poke.handle()
 async def _(matcher: Matcher, event: PokeNotifyEvent):
     if event.target_id == event.self_id:
-        print(event.group_id)
         if event.group_id is not None:
             # group
             await matcher.finish(MessageSegment.at(event.user_id) + MessageSegment.text(getquestion()))
