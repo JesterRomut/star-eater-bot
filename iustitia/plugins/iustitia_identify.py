@@ -1,6 +1,5 @@
 from io import BytesIO
-from base64 import b64encode
-from PIL import Image, ImageDraw, ImageFont, ImageColor
+from PIL import Image, ImageColor
 from fake_useragent import UserAgent
 import requests
 
@@ -13,7 +12,6 @@ from nonebot.params import ShellCommandArgs
 from nonebot.rule import ArgumentParser, Namespace
 from nonebot.exception import ParserExit
 from nonebot.adapters.onebot.v11 import MessageSegment, Message
-from ..imagelib import imgresize
 from ..iustitia.identify import identify as createidentify
 
 __plugin_name__ = '一眼丁真'

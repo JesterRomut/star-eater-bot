@@ -20,10 +20,8 @@ todaysshylook = on_command("todaysshylook", aliases={"jrrp", "今日人品"}, bl
 async def _(matcher: Matcher, event: Union[PrivateMessageEvent, GroupMessageEvent, GuildMessageEvent]):
     if isinstance(event, GuildMessageEvent):
         # guild
-        idnum = event.get_user_id()
-        name = event.sender.card if event.sender.card \
-            else event.sender.nickname
-        await matcher.finish(source.todaysshylook(int(idnum), name))
+        idnum = int(event.get_user_id())
+        name = event.sender.nickname
     else:
         if isinstance(event, GroupMessageEvent) and (event.anonymous is not None):
             # anonymous
@@ -34,4 +32,4 @@ async def _(matcher: Matcher, event: Union[PrivateMessageEvent, GroupMessageEven
             idnum = event.user_id
             name = event.sender.card if event.sender.card \
                 else event.sender.nickname
-        await matcher.finish(source.todaysshylook(idnum, name))
+    await matcher.finish(source.todaysshylook(idnum, name))
