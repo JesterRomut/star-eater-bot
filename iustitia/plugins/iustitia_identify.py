@@ -1,7 +1,6 @@
 from io import BytesIO
 from PIL import Image, ImageColor
-from fake_useragent import UserAgent
-import requests
+from requests import HTTPError
 
 import random
 import os
@@ -12,14 +11,14 @@ from nonebot.params import ShellCommandArgs
 from nonebot.rule import ArgumentParser, Namespace
 from nonebot.exception import ParserExit
 from nonebot.adapters.onebot.v11 import MessageSegment, Message
-from ..iustitia.identify import identify as createidentify
+from ..iustitia.meme import identify as createidentify
+from ..iustitia.requests import IustitiaRequest
 
 __plugin_name__ = '一眼丁真'
 __plugin_usage__ = """输入 !鉴定 !identify !一眼丁真 , 鉴定为: bot
 输入 !手动鉴定 结果 -T 标题, 鉴定为: 手动鉴定"""
 
 config = get_driver().config
-ua = UserAgent(fallback='Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:24.0) Gecko/20100101 Firefox/24.0')
 
 identify = on_command("identify", aliases={"鉴定", "一眼丁真"}, block=True)
 
@@ -80,19 +79,12 @@ async def _(matcher: Matcher, args: Namespace = ShellCommandArgs()):
         else:
             url = str(args.image).strip()
 
-        res = None
-        try:
-            header = {
-                "User-Agent": ua.random
-            }
-            res = requests.get(url, headers=header)
-            res.raise_for_status()
-        except requests.HTTPError:
-            await matcher.finish(f"invalid image url: {res.status_code}")
-        except requests.RequestException:
-            await matcher.finish("get image failed")
-        if int(res.headers['Content-length']) > 1048576:  # 1 MB
-            await matcher.finish("image too big")
+        res, err = IustitiaRequest().get(url)
+        if err:
+            if isinstance(err, HTTPError):
+                await matcher.finish(f"invalid image url: {res.status_code}")
+            else:
+                await matcher.finish("get image failed")
 
         headimage = Image.open(BytesIO(res.content))
     try:

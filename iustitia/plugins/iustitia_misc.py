@@ -2,16 +2,14 @@ from nonebot import on_command
 from nonebot.params import CommandArg
 from nonebot.matcher import Matcher
 from nonebot.adapters import Message
-from nonebot.adapters.onebot.v11 import PrivateMessageEvent, GroupMessageEvent
 import random
-from typing import Union
 
 reverberation = on_command("reverberation", aliases={"复读", "回声", }, block=True)
 calamityclub = on_command("calamityclub", aliases={"灾厄社", "灾厄社频道", "私货"}, block=True)
 
 
 @reverberation.handle()
-async def _(matcher: Matcher, _: Union[PrivateMessageEvent, GroupMessageEvent], arg: Message = CommandArg()):
+async def _(matcher: Matcher, arg: Message = CommandArg()):
     arg = arg.extract_plain_text().strip()
     if len(arg) > 125:
         await matcher.finish("too long message")

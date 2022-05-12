@@ -3,7 +3,7 @@ from nonebot import on_command, get_driver
 from nonebot.matcher import Matcher
 from typing import Union
 from nonebot.adapters.onebot.v11 import PrivateMessageEvent, GroupMessageEvent
-import os
+from os import path
 
 __plugin_name__ = '目力娇喘'
 __plugin_usage__ = """输入 !嘉登笑 听嘉登笑
@@ -12,26 +12,20 @@ __plugin_usage__ = """输入 !嘉登笑 听嘉登笑
 
 config = get_driver().config
 
-ahegao = on_command("ahegao", aliases={"娇喘", "恶臭", "目力", '目力娇喘', "喘一个", }, block=True)
-draedonlaugh = on_command("draedonlaugh", aliases={"嘉登笑", }, block=True)
-kidscream = on_command("kidscream", aliases={"铜叫", }, block=True)
+
+class AhegaoCommand:
+    def __init__(self, name, aliases: set, filepath: str) -> None:
+        self.filepath = filepath
+        self.matcher = on_command(name, aliases=aliases, block=True)
+        self.matcher.handle()(self.handle)
+
+    async def handle(self, matcher: Matcher, _: Union[PrivateMessageEvent, GroupMessageEvent]):
+        file = path.abspath(f"{config.static_dir}/audio/{self.filepath}")
+        await matcher.finish(MessageSegment.record(file=f"file:///{file}"))
 
 
-def _get_record(file):
-    file = os.path.abspath(f"{config.static_dir}/audio/{file}")
-    return MessageSegment.record(file=f"file:///{file}")
-
-
-@ahegao.handle()
-async def _(matcher: Matcher, _: Union[PrivateMessageEvent, GroupMessageEvent]):
-    await matcher.finish(_get_record("senpaiRoar.mp3"))
-
-
-@draedonlaugh.handle()
-async def _(matcher: Matcher, _: Union[PrivateMessageEvent, GroupMessageEvent]):
-    await matcher.finish(_get_record("DraedonLaugh.wav"))
-
-
-@kidscream.handle()
-async def _(matcher: Matcher, _: Union[PrivateMessageEvent, GroupMessageEvent]):
-    await matcher.finish(_get_record("kidscream.mp3"))
+commands = [
+    AhegaoCommand("ahegao", {"娇喘", "恶臭", "目力", '目力娇喘', "喘一个", }, "senpaiRoar.mp3"),
+    AhegaoCommand("draedonlaugh", {"嘉登笑", }, "DraedonLaugh.wav"),
+    AhegaoCommand("kidscream", {"铜叫", }, "kidscream.mp3")
+]

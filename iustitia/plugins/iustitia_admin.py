@@ -5,10 +5,12 @@ from nonebot.rule import ArgumentParser, Namespace
 from nonebot.exception import ParserExit
 from nonebot.log import logger
 from nonebot.adapters.onebot.v11 import Bot, PrivateMessageEvent, GroupMessageEvent, MessageSegment
+from nonebot_plugin_guild_patch import GuildMessageEvent
 from nonebot.adapters.onebot.v11.exception import ApiNotAvailable, ActionFailed
 from nonebot.adapters import Message
 from nonebot.permission import SUPERUSER
 from typing import Union
+from ujson import dumps, loads
 import os
 
 config = get_driver().config
@@ -30,8 +32,16 @@ leave = on_command("leave", aliases={"退群", "退出", }, permission=SUPERUSER
 
 recall = on_command("recall", aliases={"撤回", }, permission=SUPERUSER, block=True)
 
+b_parser = ArgumentParser(usage=".ban int:banid [--atype str:onebot/guild] [--unban]")
+b_parser.add_argument("banid", type=int)
+b_parser.add_argument("-A", "--atype")
+b_parser.add_argument("-U", "--unban", action='store_false')
+ban = on_shell_command("ban", parser=b_parser, aliases={"禁用", }, block=True, permission=SUPERUSER)
+
 
 @rename.handle()
+@whisper.handle()
+@ban.handle()
 async def _(matcher: Matcher, _: ParserExit = ShellCommandArgs()):
     await matcher.finish("invalid argument")
 
@@ -55,11 +65,6 @@ async def _(matcher: Matcher, bot: Bot, event: Union[PrivateMessageEvent, GroupM
         await matcher.send("set group card failed")
         raise e
     await matcher.finish("success")
-
-
-@whisper.handle()
-async def _(matcher: Matcher, _: ParserExit = ShellCommandArgs()):
-    await matcher.finish("invalid argument")
 
 
 @whisper.handle()
@@ -158,3 +163,33 @@ async def _(bot: Bot, event: Union[PrivateMessageEvent, GroupMessageEvent], matc
                 return
             except ActionFailed:
                 await matcher.finish("recall failed")
+
+
+@ban.handle()
+async def _(matcher: Matcher, event: Union[PrivateMessageEvent, GroupMessageEvent, GuildMessageEvent],
+            args: Namespace = ShellCommandArgs(), ):
+    user_id = str(args.banid)
+
+    if args.atype not in ("onebot", "guild",):
+        if isinstance(event, GuildMessageEvent):
+            atype = "guild"
+        else:
+            atype = "onebot"
+    else:
+        atype = args.atype
+
+    with open("memory.json", "r", encoding="UTF-8") as f:
+        memory = loads(f.read())
+
+    perm = memory["perm"][atype]["user"]
+    try:
+        perm[user_id]
+    except KeyError:
+        memory["perm"][atype]["user"][user_id] = {"banned": args.unban}
+    else:
+        memory["perm"][atype]["user"][user_id]["banned"] = args.unban
+
+    with open("memory.json", "w", encoding="UTF-8") as f:
+        f.write(dumps(memory, indent=4))
+
+    await matcher.finish(f"successfully {'' if args.unban else 'un'}banned user:{user_id}")
