@@ -1,6 +1,6 @@
 from PIL import Image, ImageDraw, ImageFont, ImageColor
 from . import config
-from ..imagelib import imgresize
+from .image import imgresize
 from io import BytesIO
 from base64 import b64encode
 from os import path

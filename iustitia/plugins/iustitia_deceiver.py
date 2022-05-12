@@ -4,11 +4,7 @@ from nonebot.adapters.onebot.v11 import MessageSegment, Bot, Message
 from nonebot.matcher import Matcher
 from typing import Union
 from nonebot.adapters.onebot.v11 import PrivateMessageEvent, GroupMessageEvent
-from nonebot.adapters.onebot.v11.exception import ApiNotAvailable, ActionFailed
-
-__plugin_name__ = '嘉登色图'
-__plugin_usage__ = """输入 !rwkk 看好康的
-绝对绝对不是rickroll"""
+from nonebot.adapters.onebot.v11.exception import ActionFailed
 
 nameList = [
     "futa加灯打疯凶药",
@@ -16,7 +12,7 @@ nameList = [
     "橙子在左菠萝在右妞子在中",
     "四手霸王电锯反攻妞子",
     "黑丝XM05捆绑丸吞",
-    "监禁？俘获？嘉登的命运究竟是什么",
+    "监禁? 俘获? 嘉登的命运究竟是什么",
 ]
 
 rwkk = on_command("rwkk", aliases={'嘉登色图', "色图", }, block=True)
@@ -40,7 +36,7 @@ async def _(matcher: Matcher, event: Union[PrivateMessageEvent, GroupMessageEven
     user_id = event.user_id
     try:
         await bot.send_private_msg(user_id=user_id, message=Message([res]))
-    except (ApiNotAvailable, ActionFailed):
+    except ActionFailed:
         await matcher.finish("这个要加好友私发")
     else:
         await matcher.finish(MessageSegment.at(user_id) + MessageSegment.text("已私发"))

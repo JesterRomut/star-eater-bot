@@ -7,9 +7,6 @@ from nonebot.adapters import Message
 
 from ujson import loads
 
-__plugin_name__ = '答案之书'
-__plugin_usage__ = """输入 !答案之书 解决你的一切疑惑"""
-
 config = get_driver().config
 with open(f"{config.static_dir}/storage/answers.json", encoding="UTF-8") as f:
     answers = loads(f.read())

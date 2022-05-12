@@ -3,7 +3,7 @@ from PIL import Image, ImageColor
 from requests import HTTPError
 
 import random
-import os
+from os import listdir, path
 
 from nonebot import on_command, on_shell_command, get_driver
 from nonebot.matcher import Matcher
@@ -12,11 +12,9 @@ from nonebot.rule import ArgumentParser, Namespace
 from nonebot.exception import ParserExit
 from nonebot.adapters.onebot.v11 import MessageSegment, Message
 from ..iustitia.meme import identify as createidentify
+from ..iustitia.meme import rua as generate_rua
 from ..iustitia.requests import IustitiaRequest
 
-__plugin_name__ = '一眼丁真'
-__plugin_usage__ = """输入 !鉴定 !identify !一眼丁真 , 鉴定为: bot
-输入 !手动鉴定 结果 -T 标题, 鉴定为: 手动鉴定"""
 
 config = get_driver().config
 
@@ -31,21 +29,24 @@ ci_parser.add_argument("-B", "--border", required=False, default=None)
 ci_parser.add_argument("-I", "--image", required=False, default=None)
 customidentify = on_shell_command("identify", parser=ci_parser, aliases={"手动鉴定", "自定义鉴定"}, block=True)
 
+r_parser = ArgumentParser(usage=".rua url:url")
+r_parser.add_argument("url")
+rua = on_shell_command("rua", parser=r_parser, aliases={"pet", "摸摸", "摸", "摸一下", "摸摸月亮", }, block=True)
+
 
 @identify.handle()  # .identify
 async def _(matcher: Matcher):
-    # chosen = os.listdir(f"{os.getcwd()}\\{session.bot.config.STATIC_DIR}\\images\\identify")
     static_dir = config.static_dir
     random.seed(None)
-    chosen = os.listdir(f"{static_dir}/images/identify")
+    chosen = listdir(f"{static_dir}/images/identify")
     chosen = chosen[random.randint(0, len(chosen) - 1)]
-    chosen = "file:///%s" % (os.path.abspath(f"{static_dir}/images/identify/{chosen}"))
+    chosen = "file:///%s" % (path.abspath(f"{static_dir}/images/identify/{chosen}"))
     # type="flash",
-    # img = MessageSegment(type='image', data={'url': chosen})
     img = MessageSegment.image(file=chosen)
     await matcher.finish(img)
 
 
+@rua.handle()
 @customidentify.handle()
 async def _(matcher: Matcher, _: ParserExit = ShellCommandArgs()):
     await matcher.finish("invalid argument")
@@ -102,3 +103,29 @@ async def _(matcher: Matcher, args: Namespace = ShellCommandArgs()):
         # MessageSegment.image(f"base64://{_create_identify(title, result, color, border_color, headimage)}")
         MessageSegment.image(f"base64://{img}")
     )
+
+
+@rua.handle()
+async def _(matcher: Matcher, args: Namespace = ShellCommandArgs()):
+    murl = Message(args.url)
+
+    # get url
+    for ms in murl:
+        if ms.type == "image":
+            url = ms.data["url"]
+            break
+    else:
+        url = str(args.url).strip()
+
+    res, err = IustitiaRequest().get(url)
+    if err:
+        if isinstance(err, HTTPError):
+            await matcher.finish(f"invalid image url: {res.status_code}")
+        else:
+            await matcher.finish("get image failed")
+
+    rimage = Image.open(BytesIO(res.content))
+    rimage = rimage.convert("RGBA")
+
+    g = generate_rua(rimage)
+    await matcher.finish(MessageSegment.image(f"base64://{g}"))

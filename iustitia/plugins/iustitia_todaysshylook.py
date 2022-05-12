@@ -10,9 +10,6 @@ try:
 except ImportError:
     from hashlib import sha512 as _sha512
 
-__plugin_name__ = '今日人品'
-__plugin_usage__ = "输入 !今日人品 .jrrp 查看人品"
-
 todaysshylook = on_command("todaysshylook", aliases={"jrrp", "今日人品"}, block=True)
 
 

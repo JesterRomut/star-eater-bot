@@ -6,7 +6,7 @@ from nonebot.exception import ParserExit
 from nonebot.log import logger
 from nonebot.adapters.onebot.v11 import Bot, PrivateMessageEvent, GroupMessageEvent, MessageSegment
 from nonebot_plugin_guild_patch import GuildMessageEvent
-from nonebot.adapters.onebot.v11.exception import ApiNotAvailable, ActionFailed
+from nonebot.adapters.onebot.v11.exception import ActionFailed
 from nonebot.adapters import Message
 from nonebot.permission import SUPERUSER
 from typing import Union
@@ -108,7 +108,7 @@ async def _(matcher: Matcher, bot: Bot, event: Union[PrivateMessageEvent, GroupM
 
     try:
         await bot.send_msg(**param)
-    except (ApiNotAvailable, ActionFailed) as e:
+    except ActionFailed as e:
         await matcher.send("send message failed %s:%s" % (msgtype, msgid))
         raise e
     else:
@@ -119,12 +119,12 @@ async def _leavegroup(bot, group_id, user_id):
     async def _sendmsg(b, msg, u):
         try:
             await b.send_private_msg(message=msg, user_id=u)
-        except (ApiNotAvailable, ActionFailed):
+        except ActionFailed:
             pass
 
     try:
         await bot.set_group_leave(group_id=group_id)
-    except (ApiNotAvailable, ActionFailed):
+    except ActionFailed:
         logger.info(f"Failed leave group:{group_id}")
         await _sendmsg(bot, f"failed leave group:{group_id}", user_id)
     else:
