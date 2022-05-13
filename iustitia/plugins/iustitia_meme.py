@@ -1,19 +1,15 @@
 from io import BytesIO
 from PIL import Image, ImageColor
 from requests import HTTPError
-
-import random
-from os import listdir, path
-
 from nonebot import on_command, on_shell_command, get_driver
 from nonebot.matcher import Matcher
 from nonebot.params import ShellCommandArgs
 from nonebot.rule import ArgumentParser, Namespace
 from nonebot.exception import ParserExit
 from nonebot.adapters.onebot.v11 import MessageSegment, Message
-from ..iustitia.meme import identify as createidentify
-from ..iustitia.meme import rua as generate_rua
+from ..iustitia.meme import custom_identify, random_identify, rua_gif
 from ..iustitia.requests import IustitiaRequest
+from numba import njit
 
 
 config = get_driver().config
@@ -36,20 +32,20 @@ rua = on_shell_command("rua", parser=r_parser, aliases={"pet", "摸摸", "摸", 
 
 @identify.handle()  # .identify
 async def _(matcher: Matcher):
-    static_dir = config.static_dir
-    random.seed(None)
-    chosen = listdir(f"{static_dir}/images/identify")
-    chosen = chosen[random.randint(0, len(chosen) - 1)]
-    chosen = "file:///%s" % (path.abspath(f"{static_dir}/images/identify/{chosen}"))
-    # type="flash",
-    img = MessageSegment.image(file=chosen)
-    await matcher.finish(img)
+    await matcher.finish(
+        MessageSegment.image(file=f"file:///{random_identify()}")
+    )
 
 
 @rua.handle()
 @customidentify.handle()
 async def _(matcher: Matcher, _: ParserExit = ShellCommandArgs()):
     await matcher.finish("invalid argument")
+
+
+@njit
+def _hexstrip(c):
+    return "#" + c if c[0] != "#" else c
 
 
 @customidentify.handle()
@@ -64,9 +60,6 @@ async def _(matcher: Matcher, args: Namespace = ShellCommandArgs()):
     color = None
     border_color = None
     result = f"鉴定为: {args.result}"
-
-    def _hexstrip(c):
-        return "#" + c if c[0] != "#" else c
 
     # request
     if args.image is not None:
@@ -98,7 +91,7 @@ async def _(matcher: Matcher, args: Namespace = ShellCommandArgs()):
         if title[-2::1] != "丁真":
             title += "丁真"
 
-    img = createidentify(title=title, desc=result, color=color, border=border_color, headimage=headimage)
+    img = custom_identify(title=title, desc=result, color=color, border=border_color, headimage=headimage)
     await matcher.finish(
         # MessageSegment.image(f"base64://{_create_identify(title, result, color, border_color, headimage)}")
         MessageSegment.image(f"base64://{img}")
@@ -127,5 +120,5 @@ async def _(matcher: Matcher, args: Namespace = ShellCommandArgs()):
     rimage = Image.open(BytesIO(res.content))
     rimage = rimage.convert("RGBA")
 
-    g = generate_rua(rimage)
+    g = rua_gif(rimage)
     await matcher.finish(MessageSegment.image(f"base64://{g}"))

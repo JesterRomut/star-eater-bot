@@ -1,58 +1,32 @@
 from nonebot.log import logger
 from nonebot import on_request, on_notice, on_message, get_driver
 from nonebot.adapters.onebot.v11.event import FriendRequestEvent, GroupRequestEvent
-from nonebot_plugin_guild_patch import GuildMessageEvent
-from nonebot.adapters.onebot.v11 import Bot, PokeNotifyEvent, PrivateMessageEvent, GroupMessageEvent
+from nonebot.adapters.onebot.v11 import Bot, PokeNotifyEvent
 from nonebot.adapters.onebot.v11 import MessageSegment
 from nonebot.adapters.onebot.v11.exception import ActionFailed
 from nonebot.adapters import Event
 from nonebot.matcher import Matcher
-from nonebot.message import event_preprocessor
 from nonebot.rule import to_me
-from nonebot.exception import IgnoredException
-from typing import Union
-from ujson import loads
-import random
+from ..iustitia.locale import Languages
+from numpy.random import default_rng
+from pydantic import BaseModel
 
 config = get_driver().config
+_r = default_rng()
+
 
 # preprocessor
 
 
-@event_preprocessor
-async def _(event: Union[PrivateMessageEvent, GroupMessageEvent, GuildMessageEvent]):
-    user_id = str(event.user_id)
-
-    if user_id in config.superusers:
-        return
-
-    with open("memory.json", "r") as memory:
-        rawperm = loads(memory.read())["perm"]
-
-    def _raise_perm(p):
-        try:
-            user = p[user_id]
-        except KeyError:
-            pass
-        else:
-            if user.get("banned", False) is True:
-                raise IgnoredException("ignored user:%s" % user_id)
-
-    if isinstance(event, GuildMessageEvent):
-        # guild
-        perm = rawperm["guild"]["user"]
-        _raise_perm(perm)
-    else:
-        perm = rawperm["onebot"]["user"]
-        _raise_perm(perm)
+class Setting(BaseModel):
+    lang: str = Languages.ZH
+    banned: bool = False
 
 
 # notice & request
-
 def getquestion():
     res = "?"
-    random.seed(None)
-    if random.randint(0, 9) == 0:
+    if _r.integers(0, 9) == 0:
         res = "¿"
     return res
 
@@ -104,7 +78,8 @@ async def _(matcher: Matcher, event: PokeNotifyEvent):
     if event.target_id == event.self_id:
         if event.group_id is not None:
             # group
-            await matcher.finish(MessageSegment.at(event.user_id) + MessageSegment.text(getquestion()))
+            # MessageSegment.at(event.user_id) +
+            await matcher.finish(MessageSegment.text(getquestion()), at_sender=True)
         await matcher.finish(getquestion())
 
 

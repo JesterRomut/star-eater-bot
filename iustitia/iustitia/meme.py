@@ -3,11 +3,21 @@ from . import config
 from .image import imgresize
 from io import BytesIO
 from base64 import b64encode
-from os import path
+from os import listdir, path
+from numpy.random import default_rng
 
 
-def identify(title: str, desc: str, color: ImageColor,
-             border: ImageColor = None, headimage: Image.Image = None) -> str:
+def random_identify() -> str:
+    r = default_rng()
+    identifypath = f"{config.static_dir}/images/identify"
+    chosen = listdir(identifypath)
+    chosen = r.choice(chosen)
+    chosen = path.abspath(f"{identifypath}/{chosen}")
+    return chosen
+
+
+def custom_identify(title: str, desc: str, color: ImageColor,
+                    border: ImageColor = None, headimage: Image.Image = None) -> str:
     # img process
     with Image.open(f"{config.static_dir}/images/customidentify.JPG") as image:
         font_dir = f"{config.static_dir}/fonts/NotoSansSC-Regular.otf"
@@ -42,9 +52,9 @@ def identify(title: str, desc: str, color: ImageColor,
 
         # head image
         if headimage is not None:
-            with headimage as head:
+            with headimage:
                 pos = (530, 622,)
-                headstrip = head.convert('RGBA')
+                headstrip = headimage.convert('RGBA')
                 headstrip = imgresize(headstrip, 600)
                 # headstrip = headstrip.resize(size=(int(w / mul), int(h / mul),), reducing_gap=1.01, resample=0, )
                 w, h = headstrip.size
@@ -58,7 +68,7 @@ def identify(title: str, desc: str, color: ImageColor,
         return b64encode(buff.getvalue()).decode()
 
 
-def rua(img: Image.Image) -> str:
+def rua_gif(img: Image.Image) -> str:
     fdir = f"{config.static_dir}/images/rua/"
     isize = [(350, 350), (372, 305), (395, 283), (380, 305), (350, 372)]
     # ipos = [(50, 150), (28, 195), (5, 217), (5, 195), (50, 128)]
@@ -68,22 +78,22 @@ def rua(img: Image.Image) -> str:
     gif = []
 
     size = 350
-    image = Image.new(mode="RGBA", size=(size, size))
-    img = imgresize(img, size)
-    pos = ((size - img.size[0]) // 2, (size - img.size[1]) // 2)
-    image.paste(img, pos, mask=img.split()[3])
-    for i in range(5):
-        frame = Image.new(mode="RGBA", size=(500, 500))
-        hand = Image.open(path.join(fdir, f"{i + 1}.png"))
-        hand = hand.convert("RGBA")
-        fimage = image.resize(isize[i], reducing_gap=1.01, resample=0, )
-        frame.paste(fimage, ipos[i], mask=fimage.split()[3])
-        frame.paste(hand, (0, -20), mask=hand.split()[3])
-        mask = frame.split()[3]
-        mask = Image.eval(mask, lambda a: 255 if a <= 50 else 0)
-        frame = frame.convert('RGB').convert('P', palette=Image.ADAPTIVE, colors=255)
-        frame.paste(255, mask)
-        gif.append(frame)
+    with Image.new(mode="RGBA", size=(size, size)) as image:
+        img = imgresize(img, size)
+        pos = ((size - img.size[0]) // 2, (size - img.size[1]) // 2)
+        image.paste(img, pos, mask=img.split()[3])
+        for i in range(5):
+            with Image.new(mode="RGBA", size=(500, 500)) as frame:
+                with Image.open(path.join(fdir, f"{i + 1}.png")) as hand:
+                    hand = hand.convert("RGBA")
+                    fimage = image.resize(isize[i], reducing_gap=1.01, resample=0, )
+                    frame.paste(fimage, ipos[i], mask=fimage.split()[3])
+                    frame.paste(hand, (0, -20), mask=hand.split()[3])
+                mask = frame.split()[3]
+                mask = Image.eval(mask, lambda a: 255 if a <= 50 else 0)
+                frame = frame.convert('RGB').convert('P', palette=Image.ADAPTIVE, colors=255)
+                frame.paste(255, mask)
+                gif.append(frame)
 
     buff = BytesIO()
     gif[0].save(fp=buff, format="gif", save_all=True, append_images=gif, optimize=True,

@@ -11,7 +11,7 @@ from nonebot.adapters import Message
 from nonebot.permission import SUPERUSER
 from typing import Union
 from ujson import dumps, loads
-import os
+from os import path
 
 config = get_driver().config
 
@@ -73,8 +73,8 @@ async def _(matcher: Matcher, bot: Bot, event: Union[PrivateMessageEvent, GroupM
     if args.exec:
         loc = {}
         glo = {
-            "l_audio": lambda f: f"file:///{os.path.abspath(f'{config.static_dir}/audio/{f}')}",
-            "l_image": lambda f: f"file:///{os.path.abspath(f'{config.static_dir}/images/{f}')}",
+            "l_audio": lambda f: f"file:///{path.abspath(f'{config.static_dir}/audio/{f}')}",
+            "l_image": lambda f: f"file:///{path.abspath(f'{config.static_dir}/images/{f}')}",
             "ms": MessageSegment,
         }
         try:
