@@ -9,7 +9,6 @@ from nonebot.exception import ParserExit
 from nonebot.adapters.onebot.v11 import MessageSegment, Message
 from ..iustitia.meme import custom_identify, random_identify, rua_gif
 from ..iustitia.requests import IustitiaRequest
-from numba import njit
 
 
 config = get_driver().config
@@ -41,11 +40,6 @@ async def _(matcher: Matcher):
 @customidentify.handle()
 async def _(matcher: Matcher, _: ParserExit = ShellCommandArgs()):
     await matcher.finish("invalid argument")
-
-
-@njit
-def _hexstrip(c):
-    return "#" + c if c[0] != "#" else c
 
 
 @customidentify.handle()
@@ -81,6 +75,10 @@ async def _(matcher: Matcher, args: Namespace = ShellCommandArgs()):
                 await matcher.finish("get image failed")
 
         headimage = Image.open(BytesIO(res.content))
+
+    def _hexstrip(c):
+        return "#" + c if c[0] != "#" else c
+
     try:
         color = ImageColor.getcolor(_hexstrip(args.color), "RGB")
         border_color = ImageColor.getcolor(_hexstrip(args.border), "RGB") if args.border is not None else None
@@ -117,8 +115,9 @@ async def _(matcher: Matcher, args: Namespace = ShellCommandArgs()):
         else:
             await matcher.finish("get image failed")
 
-    rimage = Image.open(BytesIO(res.content))
-    rimage = rimage.convert("RGBA")
+    with Image.open(BytesIO(res.content)) as rimg:
+        rimage = rimg.convert("RGBA")
 
-    g = rua_gif(rimage)
+        g = rua_gif(rimage)
+
     await matcher.finish(MessageSegment.image(f"base64://{g}"))

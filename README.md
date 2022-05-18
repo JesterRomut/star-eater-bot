@@ -2,7 +2,7 @@
 ===
 
 Iustitia 是 Jester Romut 编写的一个 QQ 机器人核心, 由 NoneBot2 强力驱动。
-目前 Iustitia 以**焚天神兵** (QQ: `2106988754`) 作为表现层。
+目前 Iustitia 以**焚天神兵** (QQ: `1052820830`) 作为表现层。
 
 ## 注意
 

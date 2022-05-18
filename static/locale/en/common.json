@@ -20,7 +20,8 @@
                     "3 X(S-03 Apollo)-rated images",
                     "4 Skunk Senpai's War Roar",
                     "5 Answers book",
-                    "6 Pet the moon"
+                    "6 Pet the moon",
+                    "7 Homonumerals Argues"
                 ],
                 "guild": [
                     "All memes included so far: ",
@@ -29,6 +30,7 @@
                     "2 Today's luck look",
                     "5 Answers book",
                     "6 Pet the moon",
+                    "7 Numerals Argues",
                     "CAUTION: QQ Guild Service is still in dev, if you have some issue, please tell Jester Romut."
                 ]
             },
@@ -50,7 +52,8 @@
                     "Type !ahegao for some......"
                 ],
                 "5": ["Type !answers, all your question fulfilled"],
-                "6": ["Type !rua image !pet image, pet an image"]
+                "6": ["Type !rua image !pet image, pet an image"],
+                "7": ["Type !homonumber number to demonstrate its stinky essence"]
             }
         },
         "iustitia_deceiver": {
@@ -63,7 +66,15 @@
                 "Imprison? Captive? What will happen to Draedon's fate"
             ],
             "mustfriend": "This needs to be send privately",
-            "success": "I sent you"
+            "success": "sent to you"
+        },
+        "iustitia_homonumberic": {
+            "parserexit": {
+                "toolong": "Is it necessary to demonstrate such a stink (so long) thing?",
+                "hasarg": "Is it necessary to demonstrate such a stink {Arg}?",
+                "hasntarg": "What do you want to demonstrate, kora"
+            },
+            "toolong": "Is it necessary to demonstrate such a stink (so long) number?"
         }
     }
 }

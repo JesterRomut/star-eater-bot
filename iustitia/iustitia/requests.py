@@ -14,7 +14,7 @@ class IustitiaRequest:
         }
         return dic
 
-    def get(self, url: str) -> tuple[requests.Response, Union[bool, requests.RequestException]]:
+    def get(self, url: str) -> tuple[requests.Response, Union[bool, Exception]]:
         res = None
         try:
             res = requests.get(url, headers=self.header)

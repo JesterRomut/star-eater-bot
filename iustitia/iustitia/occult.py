@@ -1,5 +1,5 @@
 from datetime import date
-from numpy.random import seed, choice, randint
+from numpy.random import seed, choice, randint, default_rng
 from . import config
 from ujson import load
 from numba import njit
@@ -21,7 +21,7 @@ def shylook(idnum: int) -> int:
     # d10, luck = randint(0, 19), randint(0, 100)
     d10, luck = _shylook(idnum + date.today().toordinal())
     if d10 == 0:
-        luck = luckyNums[choice(_luckyNums)]
+        luck = default_rng(luck).choice(_luckyNums)
     return luck
 
 

@@ -7,20 +7,11 @@ from nonebot.adapters.onebot.v11.exception import ActionFailed
 from nonebot.adapters import Event
 from nonebot.matcher import Matcher
 from nonebot.rule import to_me
-from ..iustitia.locale import Languages
 from numpy.random import default_rng
-from pydantic import BaseModel
+
 
 config = get_driver().config
 _r = default_rng()
-
-
-# preprocessor
-
-
-class Setting(BaseModel):
-    lang: str = Languages.ZH
-    banned: bool = False
 
 
 # notice & request
@@ -54,12 +45,13 @@ nlp = on_message(rule=to_me(), block=True, priority=100)
 # CAUTION: MAY CAUSE ACCOUNT BAN
 @friend.handle()
 async def _(bot: Bot, event: FriendRequestEvent):
-    try:
-        await event.approve(bot)
-    except ActionFailed:
-        pass
-    else:
-        logger.info("Added %s to friends" % event.user_id)
+    if config.allow_friend_request:
+        try:
+            await event.approve(bot)
+        except ActionFailed:
+            pass
+        else:
+            logger.info("Added %s to friends" % event.user_id)
 
 
 @group.handle()
