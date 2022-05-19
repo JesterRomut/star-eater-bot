@@ -7,18 +7,9 @@ from nonebot.params import CommandArg, Depends
 from nonebot.adapters import Message
 from ..iustitia.occult import shylook, answers
 from ..locale import Localisation
-from numba import njit
 
 todaysshylook = on_command("todaysshylook", aliases={"jrrp", "luck", "shylook", "今日人品"}, block=True)
 answersbook = on_command("answersbook", aliases={"answers", "答案之书", "答案", "翻看答案", }, block=True)
-
-
-@njit
-def _str_to_int(st: str) -> int:
-    s = 0
-    for i in st:
-        s += ord(i)
-    return s
 
 
 @todaysshylook.handle()
@@ -32,13 +23,12 @@ async def _(matcher: Matcher, event: Union[PrivateMessageEvent, GroupMessageEven
     else:
         if isinstance(event, GroupMessageEvent) and (event.anonymous is not None):
             # anonymous
-            name = event.anonymous.name
-            idnum = _str_to_int(name)
+            name = idnum = event.anonymous.name
         else:
             idnum = event.user_id
             name = event.sender.card if event.sender.card \
                 else event.sender.nickname
-    await matcher.finish(locale["todaysshylook"]["default"].format(name=name, luck=shylook(idnum)))
+    await matcher.finish(locale["todaysshylook"]["default"].format(name=name, luck=shylook(str(idnum))))
 
 
 @answersbook.handle()

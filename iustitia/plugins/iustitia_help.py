@@ -1,4 +1,3 @@
-from nonebot import get_driver
 from nonebot import on_command
 from nonebot.matcher import Matcher
 from nonebot.params import CommandArg, Depends
@@ -7,9 +6,6 @@ from nonebot.adapters import Message
 from nonebot.adapters.onebot.v11 import PrivateMessageEvent, GroupMessageEvent
 from nonebot_plugin_guild_patch import GuildMessageEvent
 from typing import Union
-from ujson import loads
-
-config = get_driver().config
 
 # with open(f"{config.static_dir}/storage/help.json", "r", encoding="UTF-8") as f:
 #     helpmsg = loads(f.read())

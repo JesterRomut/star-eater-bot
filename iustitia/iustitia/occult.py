@@ -10,15 +10,24 @@ _luckyNums = [114514, 65535, 1919, 810, 364]
 
 
 @njit
-def _shylook(fseed: int):
+def _shylook(fseed: int) -> tuple[int, int]:
     seed(fseed)
     d10, luck = randint(0, 19), randint(0, 100)
     return d10, luck
 
 
-def shylook(idnum: int) -> int:
+@njit
+def _str_to_int(st: str) -> int:
+    s = 0
+    for i in st:
+        s += ord(i)
+    return s
+
+
+def shylook(uid: str) -> int:
     # seed(idnum + date.today().toordinal())
     # d10, luck = randint(0, 19), randint(0, 100)
+    idnum = _str_to_int(uid)
     d10, luck = _shylook(idnum + date.today().toordinal())
     if d10 == 0:
         luck = default_rng(luck).choice(_luckyNums)

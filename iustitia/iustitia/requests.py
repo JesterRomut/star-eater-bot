@@ -1,5 +1,5 @@
 from fake_useragent import UserAgent
-from typing import Union
+from typing import Optional
 import requests
 
 _ua = UserAgent(fallback='Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:24.0) Gecko/20100101 Firefox/24.0')
@@ -14,7 +14,7 @@ class IustitiaRequest:
         }
         return dic
 
-    def get(self, url: str) -> tuple[requests.Response, Union[bool, Exception]]:
+    def get(self, url: str) -> tuple[requests.Response, Optional[requests.RequestException]]:
         res = None
         try:
             res = requests.get(url, headers=self.header)

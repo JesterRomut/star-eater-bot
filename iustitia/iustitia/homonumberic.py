@@ -546,5 +546,5 @@ def _homonumberic(num: int) -> str:
     return re.sub(r"\*\(1\)|\+\(0\)$", "", f"{_numbers[str(div)]}*({_homonumberic(num // div)})+({_homonumberic(num % div)})")
 
 
-def homonumberic(num: int):
+def homonumberic(num: int) -> str:
     return _homonumberic(num)

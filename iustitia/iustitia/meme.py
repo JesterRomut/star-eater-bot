@@ -1,10 +1,11 @@
-from PIL import Image, ImageDraw, ImageFont, ImageColor
+from PIL import Image, ImageDraw, ImageFont
 from . import config
 from .image import imgresize
 from io import BytesIO
 from base64 import b64encode
 from os import listdir, path
 from numpy.random import default_rng
+from typing import Optional
 
 
 def random_identify() -> str:
@@ -18,7 +19,7 @@ def random_identify() -> str:
 
 #
 # @jit
-def _get_size(target_width: int, font_dir: str, desc: str):
+def _get_size(target_width: int, font_dir: str, desc: str) -> int:
     s = 0
     while True:
         f = ImageFont.truetype(font_dir, s)
@@ -29,8 +30,8 @@ def _get_size(target_width: int, font_dir: str, desc: str):
     return s
 
 
-def custom_identify(title: str, desc: str, color: ImageColor,
-                    border: ImageColor = None, headimage: Image.Image = None) -> str:
+def custom_identify(title: str, desc: str, color: tuple,
+                    border: Optional[tuple] = None, headimage: Optional[Image.Image] = None) -> str:
     # img process
     with Image.open(f"{config.static_dir}/images/customidentify.JPG") as image:
         font_dir = f"{config.static_dir}/fonts/NotoSansSC-Regular.otf"
