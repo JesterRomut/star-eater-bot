@@ -7,13 +7,15 @@ from os import listdir, path
 from numpy.random import default_rng
 from typing import Optional
 
+_r = default_rng()
+
+_identifypath = f"{config.static_dir}/images/identify"
+_identifies = listdir(_identifypath)
+
 
 def random_identify() -> str:
-    r = default_rng()
-    identifypath = f"{config.static_dir}/images/identify"
-    chosen = listdir(identifypath)
-    chosen = r.choice(chosen)
-    chosen = path.abspath(f"{identifypath}/{chosen}")
+    chosen = _r.choice(_identifies)
+    chosen = path.abspath(f"{_identifypath}/{chosen}")
     return chosen
 
 
