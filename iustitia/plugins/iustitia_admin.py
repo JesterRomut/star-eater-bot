@@ -64,7 +64,7 @@ async def _(matcher: Matcher, bot: Bot, event: Union[PrivateMessageEvent, GroupM
         group_id = args.group
     try:
         await bot.set_group_card(group_id=group_id, user_id=user_id, card=None if args.delete else args.name)
-        logger.info("Rename as %s in group:%s" % (args.name, group_id))
+        logger.info("Renamed as %s in group:%s" % (args.name, group_id))
     except Exception as e:
         await matcher.send("set group card failed")
         raise e
@@ -79,7 +79,7 @@ async def _(matcher: Matcher, bot: Bot, event: Union[PrivateMessageEvent, GroupM
         try:
             exec(args.message, _globals, loc)
         except Exception as e:
-            await session.finish(str(e))
+            await matcher.finish(str(e))
         message = list(loc.values())[0]
     else:
         message = str(args.message)

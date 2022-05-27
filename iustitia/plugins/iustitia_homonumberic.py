@@ -26,7 +26,7 @@ async def _(matcher: Matcher, _: ParserExit = ShellCommandArgs(),
 
 
 @homonumber.handle()
-async def _(matcher: Matcher, args: Namespace = ShellCommandArgs()):
-    if args.number >= 1_000_000_000_000_000_000_000:
+async def _(matcher: Matcher, args: Namespace = ShellCommandArgs(), locale: Localisation = Depends()):
+    if len(str(args.number)) > 9:
         await matcher.finish(locale["toolong"])
     await matcher.finish(homonumberic(args.number))

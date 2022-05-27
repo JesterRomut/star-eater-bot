@@ -120,4 +120,4 @@ async def _(matcher: Matcher, args: Namespace = ShellCommandArgs()):
 
         g = rua_gif(rimage)
 
-    await matcher.finish(MessageSegment.image(f"base64://{g}"))
+    await matcher.finish(MessageSegment.image(f"base64://{g}"), at_sender=True)
