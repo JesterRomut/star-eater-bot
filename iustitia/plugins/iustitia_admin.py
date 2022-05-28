@@ -19,18 +19,18 @@ _globals = {
     "ms": MessageSegment,
 }
 
-rn_parser = ArgumentParser(usage=".rename str:name [--group int:group] [--delete]")
-rn_parser.add_argument("name")
-rn_parser.add_argument("-G", "--group", type=int)
-rn_parser.add_argument("-D", "--delete", help="switch delete name", action="store_true")
-rename = on_shell_command("rename", parser=rn_parser, aliases={"改名", }, block=True, permission=SUPERUSER)
+_rn_parser = ArgumentParser(usage=".rename str:name [--group int:group] [--delete]")
+_rn_parser.add_argument("name")
+_rn_parser.add_argument("-G", "--group", type=int)
+_rn_parser.add_argument("-D", "--delete", help="switch delete name", action="store_true")
+rename = on_shell_command("rename", parser=_rn_parser, aliases={"改名", }, block=True, permission=SUPERUSER)
 
-w_parser = ArgumentParser(usage=".whisper str:message --user int:user_id / --group int:group_id [--exec]")
-w_parser.add_argument("message")
-w_parser.add_argument("-U", "--user", type=int)
-w_parser.add_argument("-G", "--group", type=int)
-w_parser.add_argument("-E", "--exec", action='store_true')
-whisper = on_shell_command("whisper", parser=w_parser, aliases={"私聊", "私发", }, block=True, permission=SUPERUSER)
+_w_parser = ArgumentParser(usage=".whisper str:message --user int:user_id / --group int:group_id [--exec]")
+_w_parser.add_argument("message")
+_w_parser.add_argument("-U", "--user", type=int)
+_w_parser.add_argument("-G", "--group", type=int)
+_w_parser.add_argument("-E", "--exec", action='store_true')
+whisper = on_shell_command("whisper", parser=_w_parser, aliases={"私聊", "私发", }, block=True, permission=SUPERUSER)
 
 leave = on_command("leave", aliases={"退群", "退出", }, permission=SUPERUSER, block=True)
 

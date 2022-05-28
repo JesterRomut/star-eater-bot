@@ -3,9 +3,7 @@ from os import path
 
 
 class AhegaoSource:
-    def __init__(self, filepath):
-        self._filepath = filepath
+    __slots__ = ("filepath",)
 
-    @property
-    def filepath(self) -> str:
-        return path.abspath(f"{config.static_dir}/audio/{self._filepath}")
+    def __init__(self, filepath):
+        self.filepath = path.abspath(f"{config.static_dir}/audio/{filepath}")

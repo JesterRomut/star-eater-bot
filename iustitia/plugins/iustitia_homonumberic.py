@@ -8,9 +8,9 @@ from nonebot.exception import ParserExit
 from ..locale import Localisation
 from ..iustitia.homonumberic import homonumberic
 
-h_parser = ArgumentParser(usage=".homonumber int:number")
-h_parser.add_argument("number", type=int)
-homonumber = on_shell_command("homonumber", parser=h_parser,
+_h_parser = ArgumentParser(usage=".homonumber int:number")
+_h_parser.add_argument("number", type=int)
+homonumber = on_shell_command("homonumber", parser=_h_parser,
                               aliases={"homo", "homonumberic", "论证", "恶臭数字", "数字论证", "恶臭数字论证"}, block=True)
 
 

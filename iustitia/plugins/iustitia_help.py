@@ -13,25 +13,26 @@ from typing import Union
 helpcommand = on_command("help", aliases={"usage", "帮助", "使用帮助", "说明", "使用说明", "使用方法"}, block=True)
 
 
+def _get_msg(locale: Localisation, event: Union[PrivateMessageEvent, GroupMessageEvent, GuildMessageEvent]):
+    if isinstance(event, GuildMessageEvent):
+        # guild
+        r = "\n".join(locale["help"]["guild"])
+    else:
+        r = "\n".join(locale["help"]["onebot"])
+    return r
+
+
 @helpcommand.handle()
 async def _(matcher: Matcher, event: Union[PrivateMessageEvent, GroupMessageEvent, GuildMessageEvent],
             arg: Message = CommandArg(), locale: Localisation = Depends()):
     arg = arg.extract_plain_text().strip().lower()
 
-    def _get_msg():
-        if isinstance(event, GuildMessageEvent):
-            # guild
-            r = "\n".join(locale["help"]["guild"])
-        else:
-            r = "\n".join(locale["help"]["onebot"])
-        return r
-
-    if not arg:
-        res = _get_msg()
-    else:
+    if arg:
         try:
             res = "\n".join(locale["plugin"][arg])
         except KeyError:
-            res = _get_msg()
+            res = _get_msg(locale, event)
+    else:
+        res = _get_msg(locale, event)
 
     await matcher.finish(res)

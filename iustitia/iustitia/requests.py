@@ -6,6 +6,8 @@ _ua = UserAgent(fallback='Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:24.0) Gecko
 
 
 class IustitiaRequest:
+    __slots__ = ()
+
     @property
     def header(self) -> dict:
         dic = {

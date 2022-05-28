@@ -16,10 +16,7 @@ _r = default_rng()
 
 # notice & request
 def getquestion():
-    res = "?"
-    if _r.integers(0, 9) == 0:
-        res = "¿"
-    return res
+    return "¿" if _r.integers(0, 9) == 0 else "?"
 
 
 async def _friend(event: Event):

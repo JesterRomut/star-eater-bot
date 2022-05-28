@@ -41,6 +41,8 @@ def _check_data(
 
 
 class Localisation(dict):
+    __slots__ = ()
+
     def __init__(self, matcher: Matcher, event: Union[PrivateMessageEvent, GroupMessageEvent, GuildMessageEvent]):
         arg = {"locale": "zh"}
 

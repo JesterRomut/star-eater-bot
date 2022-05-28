@@ -1,4 +1,4 @@
-from numpy.random import seed, choice
+from numpy.random import default_rng
 from nonebot import on_command
 from nonebot.adapters.onebot.v11 import MessageSegment, Bot, Message
 from nonebot.matcher import Matcher
@@ -8,6 +8,7 @@ from nonebot.adapters.onebot.v11.exception import ActionFailed
 from nonebot.params import Depends
 from ..locale import Localisation
 
+_r = default_rng()
 
 rwkk = on_command("rwkk", aliases={'嘉登色图', "色图", }, block=True)
 
@@ -15,8 +16,7 @@ rwkk = on_command("rwkk", aliases={'嘉登色图', "色图", }, block=True)
 @rwkk.handle()
 async def _(matcher: Matcher, event: Union[PrivateMessageEvent, GroupMessageEvent], bot: Bot,
             locale: Localisation = Depends()):
-    seed(None)
-    chosen = choice(locale["namelist"])
+    chosen = _r.choice(locale["namelist"])
     res = MessageSegment.share(
         url="https://www.youtube.com/watch?v=dQw4w9WgXcQ",
         title=chosen + " [4K 60FPS]",

@@ -4,6 +4,8 @@ from nonebot.matcher import Matcher
 from nonebot.adapters import Message
 from numpy.random import default_rng
 
+_r = default_rng()
+
 reverberation = on_command("reverberation", aliases={"复读", "回声", }, block=True)
 calamityclub = on_command("calamityclub", aliases={"灾厄社", "灾厄社频道", "私货"}, block=True)
 
@@ -20,7 +22,7 @@ async def _(matcher: Matcher, arg: Message = CommandArg()):
 
 
 def _random_insert_seq(lst, seq) -> list:
-    insert_locations = default_rng().choice(range(len(lst) + len(seq)), len(seq), replace=False)
+    insert_locations = _r.choice(range(len(lst) + len(seq)), len(seq), replace=False)
     inserts = dict(zip(insert_locations, seq))
     inp = iter(lst)
     lst[:] = [inserts[pos] if pos in inserts else next(inp)

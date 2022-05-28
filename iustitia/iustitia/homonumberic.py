@@ -1,4 +1,5 @@
 from collections import OrderedDict
+from functools import lru_cache
 import re
 
 _numbers = OrderedDict({
@@ -531,6 +532,7 @@ def _getmindiv(num) -> int:
             return int(i)
 
 
+@lru_cache
 def _homonumberic(num: int) -> str:
     if num < 0:
         # return `(⑨) * (${demolish(num * -1)})`.replace( /\ * \(1\) / g, "")

@@ -15,18 +15,18 @@ config = get_driver().config
 
 identify = on_command("identify", aliases={"鉴定", "一眼丁真"}, block=True)
 
-ci_parser = ArgumentParser(usage=".customidentify result [--title title] \
+_c_parser = ArgumentParser(usage=".customidentify result [--title title] \
                                    [--color hex:color] [--bordercolor hex:bordercolor] [--image url:url]")
-ci_parser.add_argument("result")
-ci_parser.add_argument("-T", "--title", required=False)
-ci_parser.add_argument("-C", "--color", required=False, default="#ffffff")
-ci_parser.add_argument("-B", "--border", required=False, default=None)
-ci_parser.add_argument("-I", "--image", required=False, default=None)
-customidentify = on_shell_command("identify", parser=ci_parser, aliases={"手动鉴定", "自定义鉴定"}, block=True)
+_c_parser.add_argument("result")
+_c_parser.add_argument("-T", "--title", required=False)
+_c_parser.add_argument("-C", "--color", required=False, default="#ffffff")
+_c_parser.add_argument("-B", "--border", required=False, default=None)
+_c_parser.add_argument("-I", "--image", required=False, default=None)
+customidentify = on_shell_command("identify", parser=_c_parser, aliases={"手动鉴定", "自定义鉴定"}, block=True)
 
-r_parser = ArgumentParser(usage=".rua url:url")
-r_parser.add_argument("url")
-rua = on_shell_command("rua", parser=r_parser, aliases={"pet", "摸摸", "摸", "摸一下", "摸摸月亮", }, block=True)
+_r_parser = ArgumentParser(usage=".rua url:url")
+_r_parser.add_argument("url")
+rua = on_shell_command("rua", parser=_r_parser, aliases={"pet", "摸摸", "摸", "摸一下", "摸摸月亮", }, block=True)
 
 
 @identify.handle()  # .identify
