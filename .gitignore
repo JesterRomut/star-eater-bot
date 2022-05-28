@@ -109,6 +109,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
+.env
 .venv
 env/
 venv/
@@ -139,4 +140,4 @@ dmypy.json
 
 # End of https://www.toptal.com/developers/gitignore/api/python
 /memory.json
-/static/images/identify/
+/static/

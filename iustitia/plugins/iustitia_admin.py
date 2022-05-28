@@ -9,7 +9,8 @@ from nonebot.adapters.onebot.v11.exception import ActionFailed
 from nonebot.adapters import Message
 from nonebot.permission import SUPERUSER
 from typing import Union
-from os import path
+from os import path, getcwd
+from shutil import make_archive
 
 config = get_driver().config
 
@@ -35,6 +36,8 @@ whisper = on_shell_command("whisper", parser=_w_parser, aliases={"私聊", "私�
 leave = on_command("leave", aliases={"退群", "退出", }, permission=SUPERUSER, block=True)
 
 recall = on_command("recall", aliases={"撤回", }, permission=SUPERUSER, block=True)
+
+backup = on_command("backup", aliases={"备份", "生成备份"}, permission=SUPERUSER, block=True)
 
 # b_parser = ArgumentParser(usage=".ban int:banid [--atype str:onebot/guild] [--unban]")
 # b_parser.add_argument("banid", type=int)
@@ -162,6 +165,17 @@ async def _(bot: Bot, event: Union[PrivateMessageEvent, GroupMessageEvent], matc
                 return
             except ActionFailed:
                 await matcher.finish("recall failed")
+
+
+@backup.handle()
+async def _(matcher: Matcher):
+    await matcher.send("starting backup")
+    try:
+        make_archive(r"..\..\backup", "zip")
+    except Exception as e:
+        await matcher.finish("error: {}".format(e))
+    else:
+        await matcher.finish("success")
 
 
 # @ban.handle()
