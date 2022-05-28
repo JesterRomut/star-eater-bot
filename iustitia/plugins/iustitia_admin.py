@@ -9,7 +9,7 @@ from nonebot.adapters.onebot.v11.exception import ActionFailed
 from nonebot.adapters import Message
 from nonebot.permission import SUPERUSER
 from typing import Union
-from os import path, getcwd
+from os import path
 from shutil import make_archive
 
 config = get_driver().config
