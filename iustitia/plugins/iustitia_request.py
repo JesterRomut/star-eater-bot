@@ -2,7 +2,6 @@ from nonebot.log import logger
 from nonebot import on_request, on_notice, on_message, get_driver
 from nonebot.adapters.onebot.v11.event import FriendRequestEvent, GroupRequestEvent
 from nonebot.adapters.onebot.v11 import Bot, PokeNotifyEvent
-from nonebot.adapters.onebot.v11 import MessageSegment
 from nonebot.adapters.onebot.v11.exception import ActionFailed
 from nonebot.adapters import Event
 from nonebot.matcher import Matcher
@@ -57,6 +56,7 @@ async def _(bot: Bot, event: GroupRequestEvent):
         try:
             await event.approve(bot)
         except ActionFailed:
+            logger.warning("Failed join group: %s" % event.group_id)
             raise
         else:
             logger.info("Joined group: %s" % event.group_id)
@@ -65,11 +65,7 @@ async def _(bot: Bot, event: GroupRequestEvent):
 @poke.handle()
 async def _(matcher: Matcher, event: PokeNotifyEvent):
     if event.target_id == event.self_id:
-        if event.group_id is not None:
-            # group
-            # MessageSegment.at(event.user_id) +
-            await matcher.finish(MessageSegment.text(getquestion()), at_sender=True)
-        await matcher.finish(getquestion())
+        await matcher.finish(getquestion(), at_sender=True)
 
 
 @nlp.handle()

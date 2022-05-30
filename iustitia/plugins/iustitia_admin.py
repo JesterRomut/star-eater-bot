@@ -78,12 +78,12 @@ async def _(matcher: Matcher, bot: Bot, event: Union[PrivateMessageEvent, GroupM
 async def _(matcher: Matcher, bot: Bot, event: Union[PrivateMessageEvent, GroupMessageEvent],
             args: Namespace = ShellCommandArgs()):
     if args.exec:
-        loc = {}
         try:
-            exec(args.message, _globals, loc)
+            message = eval(args.message, _globals)
         except Exception as e:
             await matcher.finish(str(e))
-        message = list(loc.values())[0]
+            return
+        # message = list(loc.values())[0]
     else:
         message = str(args.message)
     msgtype = None
