@@ -2,7 +2,7 @@ from nonebot.log import logger
 from nonebot import on_request, on_notice, on_message, get_driver
 from nonebot.adapters.onebot.v11.event import FriendRequestEvent, GroupRequestEvent
 from nonebot.adapters.onebot.v11 import Bot, PokeNotifyEvent
-from nonebot.adapters.onebot.v11.exception import ActionFailed
+from nonebot.adapters.onebot.exception import ActionFailed
 from nonebot.adapters import Event
 from nonebot.matcher import Matcher
 from nonebot.rule import to_me

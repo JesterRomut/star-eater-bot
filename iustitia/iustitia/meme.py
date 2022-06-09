@@ -9,14 +9,12 @@ from typing import Optional
 
 _r = default_rng()
 
-_identifypath = f"{config.static_dir}/images/identify"
+_identifypath = "{}/images/identify".format(config.static_dir)
 _identifies = listdir(_identifypath)
 
 
 def random_identify() -> str:
-    chosen = _r.choice(_identifies)
-    chosen = path.abspath(f"{_identifypath}/{chosen}")
-    return chosen
+    return path.abspath("{}/{}".format(_identifypath, _r.choice(_identifies)))
 
 
 #
@@ -35,8 +33,8 @@ def _get_size(target_width: int, font_dir: str, desc: str) -> int:
 def custom_identify(title: str, desc: str, color: tuple,
                     border: Optional[tuple] = None, headimage: Optional[Image.Image] = None) -> str:
     # img process
-    with Image.open(f"{config.static_dir}/images/customidentify.JPG") as image:
-        font_dir = f"{config.static_dir}/fonts/NotoSansSC-Regular.otf"
+    with Image.open("{}/images/customidentify.JPG".format(config.static_dir)) as image:
+        font_dir = "{}/fonts/NotoSansSC-Regular.otf".format(config.static_dir)
         draw = ImageDraw.ImageDraw(image)
         borderw = 5 if border else 0
 
@@ -69,7 +67,7 @@ def custom_identify(title: str, desc: str, color: tuple,
 
 
 def rua_gif(i: Image.Image) -> str:
-    fdir = f"{config.static_dir}/images/rua/"
+    fdir = "{}/images/rua/".format(config.static_dir)
     isize = [(350, 350), (372, 305), (395, 283), (380, 305), (350, 372)]
     # ipos = [(50, 150), (28, 195), (5, 217), (5, 195), (50, 128)]
     # ipos = [(60, 160), (38, 205), (15, 227), (15, 205), (60, 138)]
@@ -82,8 +80,7 @@ def rua_gif(i: Image.Image) -> str:
         with i:
             img = i.convert("RGBA")
             img = imgresize(img, size)
-            pos = ((size - img.size[0]) // 2, (size - img.size[1]) // 2)
-            image.paste(img, pos, mask=img.split()[3])
+            image.paste(img, map(lambda x: (size - x) // 2, img.size), mask=img.split()[3])
             for a in range(5):
                 with Image.new(mode="RGBA", size=(500, 500)) as frame:
                     with Image.open(path.join(fdir, f"{a + 1}.png")) as hand:

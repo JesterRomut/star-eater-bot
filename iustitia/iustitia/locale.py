@@ -10,5 +10,7 @@ class Languages:
 locales = [Languages.EN, Languages.ZH]
 locale = {}
 for loc in locales:
-    locale[loc] = load(open(f"{config.static_dir}/locale/{loc}/common.json", encoding="UTF-8"))
+    locale[loc] = load(open(
+        "{}/locale/{}/common.json".format(config.static_dir, loc)
+        , encoding="UTF-8"))
 

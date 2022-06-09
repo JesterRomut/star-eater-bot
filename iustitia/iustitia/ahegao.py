@@ -6,4 +6,4 @@ class AhegaoSource:
     __slots__ = ("filepath",)
 
     def __init__(self, filepath):
-        self.filepath = path.abspath(f"{config.static_dir}/audio/{filepath}")
+        self.filepath = path.abspath("{}/audio/{}".format(config.static_dir, filepath))

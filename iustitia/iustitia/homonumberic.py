@@ -528,8 +528,8 @@ _numbers = OrderedDict({
 
 def _getmindiv(num) -> int:
     for i in _numbers.keys():
-        if num >= int(i):
-            return int(i)
+        if num >= (n := int(i)):
+            return n
 
 
 @lru_cache
@@ -541,11 +541,18 @@ def _homonumberic(num: int) -> str:
         tmp = re.sub(r"\*\(1\)", "", "(11-4-5+1-4)*({})".format(_homonumberic(num * -1)))
         # return re.sub(r"\d+|⑨", lambda m: _numbers[m.group(0)], tmp)
         return tmp
-    if _numbers.get(str(num), False):
-        return _numbers[str(num)]
+    if n := _numbers.get(str(num), False):
+        return n
     div = _getmindiv(num)
     # (`${div}*(${demolish(Math.floor(num / div))})+` + `(${demolish(num % div)})`)
-    return re.sub(r"\*\(1\)|\+\(0\)$", "", f"{_numbers[str(div)]}*({_homonumberic(num // div)})+({_homonumberic(num % div)})")
+    return re.sub(
+        r"\*\(1\)|\+\(0\)$", "",
+        "{}*({})+({})".format(
+            _numbers[str(div)],
+            _homonumberic(num // div),
+            _homonumberic(num % div)
+        )
+    )
 
 
 def homonumberic(num: int) -> str:

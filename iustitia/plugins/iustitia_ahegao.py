@@ -1,8 +1,7 @@
 from nonebot.adapters.onebot.v11 import MessageSegment
 from nonebot import on_command
 from nonebot.matcher import Matcher
-from typing import Union
-from nonebot.adapters.onebot.v11 import PrivateMessageEvent, GroupMessageEvent
+from nonebot.adapters.onebot.v11 import MessageEvent
 from ..iustitia.ahegao import AhegaoSource
 
 
@@ -14,8 +13,8 @@ class AhegaoCommand(AhegaoSource):
         self.matcher = on_command(name, aliases=aliases, block=True)
         self.matcher.append_handler(self.handle)
 
-    async def handle(self, matcher: Matcher, _: Union[PrivateMessageEvent, GroupMessageEvent]):
-        await matcher.finish(MessageSegment.record(file=f"file:///{self.filepath}"))
+    async def handle(self, matcher: Matcher, _: MessageEvent):
+        await matcher.finish(MessageSegment.record(file="file:///{}".format(self.filepath)))
 
 
 commands = (

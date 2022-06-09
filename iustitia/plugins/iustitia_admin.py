@@ -2,15 +2,14 @@ from nonebot import on_shell_command, get_driver, on_command
 from nonebot.matcher import Matcher
 from nonebot.params import ShellCommandArgs, CommandArg
 from nonebot.rule import ArgumentParser, Namespace
-from nonebot.exception import ParserExit
 from nonebot.log import logger
-from nonebot.adapters.onebot.v11 import Bot, PrivateMessageEvent, GroupMessageEvent, MessageSegment
-from nonebot.adapters.onebot.v11.exception import ActionFailed
+from nonebot.adapters.onebot.v11 import Bot, PrivateMessageEvent, GroupMessageEvent, MessageSegment, MessageEvent
+from nonebot.adapters.onebot.exception import ActionFailed
 from nonebot.adapters import Message
 from nonebot.permission import SUPERUSER
-from typing import Union
 from os import path
 from shutil import make_archive
+from ..misc import defaultparserexit
 
 config = get_driver().config
 
@@ -25,6 +24,7 @@ _rn_parser.add_argument("name")
 _rn_parser.add_argument("-G", "--group", type=int)
 _rn_parser.add_argument("-D", "--delete", help="switch delete name", action="store_true")
 rename = on_shell_command("rename", parser=_rn_parser, aliases={"改名", }, block=True, permission=SUPERUSER)
+rename.append_handler(defaultparserexit)
 
 _w_parser = ArgumentParser(usage=".whisper str:message --user int:user_id / --group int:group_id [--exec]")
 _w_parser.add_argument("message")
@@ -32,6 +32,7 @@ _w_parser.add_argument("-U", "--user", type=int)
 _w_parser.add_argument("-G", "--group", type=int)
 _w_parser.add_argument("-E", "--exec", action='store_true')
 whisper = on_shell_command("whisper", parser=_w_parser, aliases={"私聊", "私发", }, block=True, permission=SUPERUSER)
+whisper.append_handler(defaultparserexit)
 
 leave = on_command("leave", aliases={"退群", "退出", }, permission=SUPERUSER, block=True)
 
@@ -45,28 +46,19 @@ backup = on_command("backup", aliases={"备份", "生成备份"}, permission=SUP
 # b_parser.add_argument("-U", "--unban", action='store_false')
 # ban = on_shell_command("ban", parser=b_parser, aliases={"禁用", }, block=True, permission=SUPERUSER)
 
-
 @rename.handle()
-@whisper.handle()
-# @ban.handle()
-async def _(matcher: Matcher, _: ParserExit = ShellCommandArgs()):
-    await matcher.finish("invalid argument")
-
-
-@rename.handle()
-async def _(matcher: Matcher, bot: Bot, event: Union[PrivateMessageEvent, GroupMessageEvent],
+async def _(matcher: Matcher, bot: Bot, event: MessageEvent,
             args: Namespace = ShellCommandArgs()):
-    user_id = event.self_id
     if not args.group:
-        if isinstance(event, PrivateMessageEvent):
+        if isinstance(event, GroupMessageEvent):
+            group_id = event.group_id
+        else:
             await matcher.finish("no group id")
             return
-        else:
-            group_id = event.group_id
     else:
         group_id = args.group
     try:
-        await bot.set_group_card(group_id=group_id, user_id=user_id, card=None if args.delete else args.name)
+        await bot.set_group_card(group_id=group_id, user_id=event.self_id, card=None if args.delete else args.name)
         logger.info("Renamed as %s in group:%s" % (args.name, group_id))
     except Exception as e:
         await matcher.send("set group card failed")
@@ -75,7 +67,7 @@ async def _(matcher: Matcher, bot: Bot, event: Union[PrivateMessageEvent, GroupM
 
 
 @whisper.handle()
-async def _(matcher: Matcher, bot: Bot, event: Union[PrivateMessageEvent, GroupMessageEvent],
+async def _(matcher: Matcher, bot: Bot, event: MessageEvent,
             args: Namespace = ShellCommandArgs()):
     if args.exec:
         try:
@@ -125,7 +117,7 @@ async def _sendmsg(b, msg, u):
 
 
 @leave.handle()
-async def _(bot: Bot, matcher: Matcher, event: Union[PrivateMessageEvent, GroupMessageEvent],
+async def _(bot: Bot, matcher: Matcher, event: MessageEvent,
             arg: Message = CommandArg()):
     arg = str(arg).strip()
     if not arg:
@@ -156,7 +148,7 @@ async def _(bot: Bot, matcher: Matcher, event: Union[PrivateMessageEvent, GroupM
 
 
 @recall.handle()
-async def _(bot: Bot, event: Union[PrivateMessageEvent, GroupMessageEvent], matcher: Matcher):
+async def _(bot: Bot, event: MessageEvent, matcher: Matcher):
     if isinstance(event, GroupMessageEvent):
         if event.reply:
             msg_id = event.reply.message_id

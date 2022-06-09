@@ -10,11 +10,10 @@ class IustitiaRequest:
 
     @property
     def header(self) -> dict:
-        dic = {
+        return {
             "Accept": "image/*",
             "User-Agent": _ua.random,
         }
-        return dic
 
     def get(self, url: str) -> tuple[requests.Response, Optional[requests.RequestException]]:
         res = None
@@ -24,7 +23,7 @@ class IustitiaRequest:
         except (requests.HTTPError, requests.RequestException) as e:
             err = e
         else:
-            err = False
+            err = None
         # if int(res.headers['Content-length']) > 1048576:  # 1 MB
         #     await matcher.finish("image too big")
         return res, err

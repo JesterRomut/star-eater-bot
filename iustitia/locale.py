@@ -1,5 +1,4 @@
-from nonebot.adapters.onebot.v11 import GroupMessageEvent, PrivateMessageEvent
-from nonebot_plugin_guild_patch import GuildMessageEvent
+from nonebot.adapters.onebot.v11 import MessageEvent, GroupMessageEvent
 from nonebot.matcher import Matcher
 from nonebot.exception import FinishedException
 from .iustitia.locale import locale
@@ -14,7 +13,7 @@ class Setting(BaseModel):
 
 def _check_data(
         func: Callable[[Setting], Any],
-        event: Union[PrivateMessageEvent, GroupMessageEvent, GuildMessageEvent]
+        event: MessageEvent
 ) -> None:
     memory = load(open("memory.json", "r"))["settings"]
 
@@ -25,15 +24,16 @@ def _check_data(
             raise e
 
     _check(memory["global"])
-    if isinstance(event, GuildMessageEvent):
-        _check(memory["guild"]["global"])
-        guild_id = str(event.guild_id)
-        channel_id = str(event.channel_id)
-        guild = memory["guild"]["guild"].get(guild_id, {"global": {}, "channel": {}})
-        _check(guild["global"])
-        _check(guild["channel"].get(channel_id, {}))
-    elif isinstance(event, GroupMessageEvent):
-        _check(memory["onebot"]["global"])
+    # if isinstance(event, GuildMessageEvent):
+    #     _check(memory["guild"]["global"])
+    #     guild_id = str(event.guild_id)
+    #     channel_id = str(event.channel_id)
+    #     guild = memory["guild"]["guild"].get(guild_id, {"global": {}, "channel": {}})
+    #     _check(guild["global"])
+    #     _check(guild["channel"].get(channel_id, {}))
+    # elif isinstance(event, GroupMessageEvent):
+    _check(memory["onebot"]["global"])
+    if isinstance(event, GroupMessageEvent):
         group_id = str(event.group_id)
         _check(memory["onebot"]["group"].get(group_id, {"global": {}})["global"])
     user_id = str(event.user_id)
@@ -43,7 +43,8 @@ def _check_data(
 class Localisation(dict):
     __slots__ = ()
 
-    def __init__(self, matcher: Matcher, event: Union[PrivateMessageEvent, GroupMessageEvent, GuildMessageEvent]):
+    def __init__(self, matcher: Matcher, event: MessageEvent):
+        print("a")
         arg = {"locale": "zh"}
 
         def _check(data: Setting):

@@ -5,10 +5,10 @@ from nonebot import on_command, on_shell_command, get_driver
 from nonebot.matcher import Matcher
 from nonebot.params import ShellCommandArgs
 from nonebot.rule import ArgumentParser, Namespace
-from nonebot.exception import ParserExit
 from nonebot.adapters.onebot.v11 import MessageSegment, Message
 from ..iustitia.meme import custom_identify, random_identify, rua_gif
 from ..iustitia.requests import IustitiaRequest
+from ..misc import defaultparserexit
 
 
 config = get_driver().config
@@ -23,10 +23,12 @@ _c_parser.add_argument("-C", "--color", required=False, default="#ffffff")
 _c_parser.add_argument("-B", "--border", required=False, default=None)
 _c_parser.add_argument("-I", "--image", required=False, default=None)
 customidentify = on_shell_command("identify", parser=_c_parser, aliases={"手动鉴定", "自定义鉴定"}, block=True)
+customidentify.append_handler(defaultparserexit)
 
 _r_parser = ArgumentParser(usage=".rua url:url")
 _r_parser.add_argument("url")
 rua = on_shell_command("rua", parser=_r_parser, aliases={"pet", "摸摸", "摸", "摸一下", "摸摸月亮", }, block=True)
+rua.append_handler(defaultparserexit)
 
 
 @identify.handle()  # .identify
@@ -34,12 +36,6 @@ async def _(matcher: Matcher):
     await matcher.finish(
         MessageSegment.image(file=f"file:///{random_identify()}")
     )
-
-
-@rua.handle()
-@customidentify.handle()
-async def _(matcher: Matcher, _: ParserExit = ShellCommandArgs()):
-    await matcher.finish("invalid argument")
 
 
 @customidentify.handle()
@@ -92,7 +88,7 @@ async def _(matcher: Matcher, args: Namespace = ShellCommandArgs()):
     img = custom_identify(title=title, desc=result, color=color, border=border_color, headimage=headimage)
     await matcher.finish(
         # MessageSegment.image(f"base64://{_create_identify(title, result, color, border_color, headimage)}")
-        MessageSegment.image(f"base64://{img}")
+        MessageSegment.image("base64://{}".format(img))
     )
 
 
@@ -120,4 +116,4 @@ async def _(matcher: Matcher, args: Namespace = ShellCommandArgs()):
 
         g = rua_gif(rimage)
 
-    await matcher.finish(MessageSegment.image(f"base64://{g}"), at_sender=True)
+    await matcher.finish(MessageSegment.image("base64://{}".format(g)), at_sender=True)

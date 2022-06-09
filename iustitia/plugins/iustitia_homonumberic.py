@@ -17,8 +17,7 @@ homonumber = on_shell_command("homonumber", parser=_h_parser,
 @homonumber.handle()
 async def _(matcher: Matcher, _: ParserExit = ShellCommandArgs(),
             arg: Message = CommandArg(), locale: Localisation = Depends()):
-    arg = arg.extract_plain_text().strip()
-    if arg:
+    if arg := arg.extract_plain_text().strip():
         if len(arg) > 125:
             await matcher.finish(locale["parserexit"]["toolong"])
         await matcher.finish(locale["parserexit"]["hasarg"].format(arg=arg))
