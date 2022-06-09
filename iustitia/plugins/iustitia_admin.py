@@ -40,6 +40,7 @@ recall = on_command("recall", aliases={"撤回", }, permission=SUPERUSER, block=
 
 backup = on_command("backup", aliases={"备份", "生成备份"}, permission=SUPERUSER, block=True)
 
+
 # b_parser = ArgumentParser(usage=".ban int:banid [--atype str:onebot/guild] [--unban]")
 # b_parser.add_argument("banid", type=int)
 # b_parser.add_argument("-A", "--atype")
@@ -95,13 +96,13 @@ async def _(matcher: Matcher, bot: Bot, event: MessageEvent,
         else:
             await matcher.finish("must give a target id and type")
 
-    param = {
-        "message": message,
-        "%s_id" % msgtype: msgid,
-    }
-
     try:
-        await bot.send_msg(**param)
+        await bot.send_msg(
+            **{
+                "message": message,
+                "%s_id" % msgtype: msgid,
+            }
+        )
     except ActionFailed as e:
         await matcher.send("send message failed %s:%s" % (msgtype, msgid))
         raise e
@@ -119,15 +120,15 @@ async def _sendmsg(b, msg, u):
 @leave.handle()
 async def _(bot: Bot, matcher: Matcher, event: MessageEvent,
             arg: Message = CommandArg()):
-    arg = str(arg).strip()
-    if not arg:
+    if arg := arg.extract_plain_text():
+        group_id = arg
+    else:
         if isinstance(event, GroupMessageEvent):
             group_id = event.group_id
         else:
             await matcher.finish("must give a group id")
             return
-    else:
-        group_id = arg
+
     try:
         group_id = int(group_id)
     except ValueError:
@@ -150,10 +151,9 @@ async def _(bot: Bot, matcher: Matcher, event: MessageEvent,
 @recall.handle()
 async def _(bot: Bot, event: MessageEvent, matcher: Matcher):
     if isinstance(event, GroupMessageEvent):
-        if event.reply:
-            msg_id = event.reply.message_id
+        if reply := event.reply:
             try:
-                await bot.delete_msg(message_id=msg_id)
+                await bot.delete_msg(message_id=reply.message_id)
                 return
             except ActionFailed:
                 await matcher.finish("recall failed")
@@ -168,7 +168,6 @@ async def _(matcher: Matcher):
         await matcher.finish("error: {}".format(e))
     else:
         await matcher.finish("success")
-
 
 # @ban.handle()
 # async def _(matcher: Matcher, event: Union[PrivateMessageEvent, GroupMessageEvent, GuildMessageEvent],

@@ -6,11 +6,11 @@ from base64 import b64encode
 from os import listdir, path
 from numpy.random import default_rng
 from typing import Optional
+from functools import partial
 
 _r = default_rng()
 
-_identifypath = "{}/images/identify".format(config.static_dir)
-_identifies = listdir(_identifypath)
+_identifies = listdir(_identifypath := "{}/images/identify".format(config.static_dir))
 
 
 def random_identify() -> str:
@@ -23,10 +23,9 @@ def _get_size(target_width: int, font_dir: str, desc: str) -> int:
     s = 0
     while True:
         f = ImageFont.truetype(font_dir, s)
-        if f.getsize(desc)[0] < target_width:
-            s += 1
-        else:
+        if f.getsize(desc)[0] >= target_width:
             break
+        s += 1
     return s
 
 
@@ -36,20 +35,18 @@ def custom_identify(title: str, desc: str, color: tuple,
     with Image.open("{}/images/customidentify.JPG".format(config.static_dir)) as image:
         font_dir = "{}/fonts/NotoSansSC-Regular.otf".format(config.static_dir)
         draw = ImageDraw.ImageDraw(image)
-        borderw = 5 if border else 0
+
+        addfont = partial(draw.text, fill=color, anchor="ms", stroke_width=5 if border else 0, stroke_fill=border)
 
         # text
-
         if title is not None:
             font_title = ImageFont.truetype(font_dir, 100)
             y = 1250
-            draw.text((540, 1050), title, fill=color, anchor="ms", font=font_title,
-                      stroke_width=borderw, stroke_fill=border)
+            addfont(xy=(540, 1050), text=title, font=font_title)
         else:
             y = 1200
         font_result = ImageFont.truetype(font_dir, _get_size(1000, font_dir, desc))
-        draw.text((540, y), desc, fill=color, anchor="ms", font=font_result,
-                  stroke_width=borderw, stroke_fill=border)
+        addfont(xy=(540, y), text=desc, font=font_result)
         # head image
         if headimage is not None:
             with headimage:
@@ -60,9 +57,10 @@ def custom_identify(title: str, desc: str, color: tuple,
                 image.paste(headstrip,
                             box=(pos[0] - w // 2, pos[1] - h // 2),
                             mask=headstrip.split()[3])
-
         buff = BytesIO()
-        image.save(buff, 'jpeg', quality=80)
+        (image.resize(
+            size=map(lambda x: x // 4, image.size),
+        )).save(buff, 'jpeg')
         return b64encode(buff.getvalue()).decode()
 
 

@@ -44,7 +44,6 @@ class Localisation(dict):
     __slots__ = ()
 
     def __init__(self, matcher: Matcher, event: MessageEvent):
-        print("a")
         arg = {"locale": "zh"}
 
         def _check(data: Setting):
