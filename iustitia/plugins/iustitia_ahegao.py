@@ -1,8 +1,8 @@
 from nonebot.adapters.onebot.v11 import MessageSegment
-from nonebot import on_command
 from nonebot.matcher import Matcher
 from nonebot.adapters.onebot.v11 import MessageEvent
 from ..iustitia.ahegao import AhegaoSource
+from ..misc import on_command
 
 
 class AhegaoCommand(AhegaoSource):
@@ -10,7 +10,7 @@ class AhegaoCommand(AhegaoSource):
 
     def __init__(self, name, aliases: set, filepath: str):
         super().__init__(filepath)
-        self.matcher = on_command(name, aliases=aliases, block=True)
+        self.matcher = on_command(name, aliases=aliases)
         self.matcher.append_handler(self.handle)
 
     async def handle(self, matcher: Matcher, _: MessageEvent):

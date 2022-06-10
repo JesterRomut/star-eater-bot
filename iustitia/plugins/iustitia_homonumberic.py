@@ -1,4 +1,4 @@
-from nonebot import on_shell_command
+from ..misc import on_shell_command
 from nonebot.params import CommandArg
 from nonebot.matcher import Matcher
 from nonebot.params import ShellCommandArgs, Depends
@@ -11,7 +11,7 @@ from ..iustitia.homonumberic import homonumberic
 _h_parser = ArgumentParser(usage=".homonumber int:number")
 _h_parser.add_argument("number", type=int)
 homonumber = on_shell_command("homonumber", parser=_h_parser,
-                              aliases={"homo", "homonumberic", "论证", "恶臭数字", "数字论证", "恶臭数字论证"}, block=True)
+                              aliases={"homo", "homonumberic", "论证", "恶臭数字", "数字论证", "恶臭数字论证"})
 
 
 @homonumber.handle()

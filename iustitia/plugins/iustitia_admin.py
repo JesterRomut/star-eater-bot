@@ -1,4 +1,4 @@
-from nonebot import on_shell_command, get_driver, on_command
+from nonebot import get_driver
 from nonebot.matcher import Matcher
 from nonebot.params import ShellCommandArgs, CommandArg
 from nonebot.rule import ArgumentParser, Namespace
@@ -6,10 +6,9 @@ from nonebot.log import logger
 from nonebot.adapters.onebot.v11 import Bot, PrivateMessageEvent, GroupMessageEvent, MessageSegment, MessageEvent
 from nonebot.adapters.onebot.exception import ActionFailed
 from nonebot.adapters import Message
-from nonebot.permission import SUPERUSER
 from os import path
 from shutil import make_archive
-from ..misc import defaultparserexit
+from ..misc import defaultparserexit, on_admin_command, on_admin_shell_command
 
 config = get_driver().config
 
@@ -23,7 +22,7 @@ _rn_parser = ArgumentParser(usage=".rename str:name [--group int:group] [--delet
 _rn_parser.add_argument("name")
 _rn_parser.add_argument("-G", "--group", type=int)
 _rn_parser.add_argument("-D", "--delete", help="switch delete name", action="store_true")
-rename = on_shell_command("rename", parser=_rn_parser, aliases={"改名", }, block=True, permission=SUPERUSER)
+rename = on_admin_shell_command("rename", parser=_rn_parser, aliases={"改名", })
 rename.append_handler(defaultparserexit)
 
 _w_parser = ArgumentParser(usage=".whisper str:message --user int:user_id / --group int:group_id [--exec]")
@@ -31,14 +30,14 @@ _w_parser.add_argument("message")
 _w_parser.add_argument("-U", "--user", type=int)
 _w_parser.add_argument("-G", "--group", type=int)
 _w_parser.add_argument("-E", "--exec", action='store_true')
-whisper = on_shell_command("whisper", parser=_w_parser, aliases={"私聊", "私发", }, block=True, permission=SUPERUSER)
+whisper = on_admin_shell_command("whisper", parser=_w_parser, aliases={"私聊", "私发", })
 whisper.append_handler(defaultparserexit)
 
-leave = on_command("leave", aliases={"退群", "退出", }, permission=SUPERUSER, block=True)
+leave = on_admin_command("leave", aliases={"退群", "退出", })
 
-recall = on_command("recall", aliases={"撤回", }, permission=SUPERUSER, block=True)
+recall = on_admin_command("recall", aliases={"撤回", })
 
-backup = on_command("backup", aliases={"备份", "生成备份"}, permission=SUPERUSER, block=True)
+backup = on_admin_command("backup", aliases={"备份", "生成备份"})
 
 
 # b_parser = ArgumentParser(usage=".ban int:banid [--atype str:onebot/guild] [--unban]")

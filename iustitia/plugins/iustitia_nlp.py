@@ -1,6 +1,5 @@
 from nonebot.params import EventToMe, EventPlainText
 from nonebot.matcher import Matcher
-from nonebot import on_notice, on_message, on_command, require, get_plugin
 from numpy.random import default_rng
 from nonebot.adapters.onebot.v11 import Bot
 from nonebot.adapters.onebot.v11.event import PokeNotifyEvent, MessageEvent
@@ -9,8 +8,8 @@ from pypinyin import pinyin as _pinyin
 from functools import partial
 from pypinyin import STYLE_FIRST_LETTER
 from pypinyin_dict.phrase_pinyin_data import cc_cedict
-
-# from iustitia_occult import todaysshylook
+from ..misc import on_command, on_notice, on_message
+from .iustitia_occult import todaysshylook
 
 cc_cedict.load()
 
@@ -18,10 +17,10 @@ _r = default_rng()
 
 pinyin = partial(_pinyin, style=STYLE_FIRST_LETTER, heteronym=True, strict=True, errors="ignore")
 
-nlp = on_message(block=True, priority=100)
-nlp_c = on_command("", block=True, priority=99)
-poke = on_notice(rule=lambda event: isinstance(event, PokeNotifyEvent), block=True)
-todaysshylook = require("iustitia_occult").todaysshylook
+nlp = on_message(priority=100)
+nlp_c = on_command("", priority=99)
+poke = on_notice(rule=lambda event: isinstance(event, PokeNotifyEvent))
+# todaysshylook = require("iustitia_occult").todaysshylook
 
 
 def getquestion() -> str:
@@ -50,8 +49,7 @@ async def _(matcher: Matcher, to_me: bool = EventToMe(), arg: str = EventPlainTe
 
 @nlp_c.handle()
 async def _(bot: Bot, state: T_State, event: MessageEvent, arg: str = EventPlainText()):
-    arg = arg[1:]
-    if matchpinyin("jrrp", pinyin(arg)):
+    if matchpinyin("jrrp", pinyin(arg[1:])):
         await todaysshylook().run(bot=bot, event=event, state=state)
 
 

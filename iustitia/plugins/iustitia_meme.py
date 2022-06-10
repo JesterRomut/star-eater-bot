@@ -1,20 +1,20 @@
 from io import BytesIO
 from PIL import Image, ImageColor
-from nonebot import on_command, on_shell_command, get_driver
+from nonebot import get_driver
 from nonebot.matcher import Matcher
 from nonebot.params import ShellCommandArgs, Depends
 from nonebot.rule import ArgumentParser, Namespace
 from nonebot.adapters.onebot.v11 import MessageSegment, Message
 from ..iustitia.meme import custom_identify, random_identify, rua_gif
 from ..iustitia.requests import imageget
-from ..misc import defaultparserexit
+from ..misc import defaultparserexit, on_command, on_shell_command
 from httpx import HTTPStatusError
 from ..locale import Localisation
 
 
 config = get_driver().config
 
-identify = on_command("identify", aliases={"鉴定", "一眼丁真"}, block=True)
+identify = on_command("identify", aliases={"鉴定", "一眼丁真"})
 
 _c_parser = ArgumentParser(usage=".customidentify result [--title title] \
                                    [--color hex:color] [--bordercolor hex:bordercolor] [--image url:url]")
@@ -23,12 +23,12 @@ _c_parser.add_argument("-T", "--title", required=False)
 _c_parser.add_argument("-C", "--color", required=False, default="#ffffff")
 _c_parser.add_argument("-B", "--border", required=False, default=None)
 _c_parser.add_argument("-I", "--image", required=False, default=None)
-customidentify = on_shell_command("customidentify", parser=_c_parser, aliases={"手动鉴定", "自定义鉴定"}, block=True)
+customidentify = on_shell_command("customidentify", parser=_c_parser, aliases={"手动鉴定", "自定义鉴定"})
 customidentify.append_handler(defaultparserexit)
 
 _r_parser = ArgumentParser(usage=".rua url:url")
 _r_parser.add_argument("url")
-rua = on_shell_command("rua", parser=_r_parser, aliases={"pet", "摸摸", "摸", "摸一下", "摸摸月亮", }, block=True)
+rua = on_shell_command("rua", parser=_r_parser, aliases={"pet", "摸摸", "摸", "摸一下", "摸摸月亮", })
 rua.append_handler(defaultparserexit)
 
 

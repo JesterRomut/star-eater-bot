@@ -1,4 +1,4 @@
-from nonebot import on_command
+from ..misc import on_command
 from nonebot.params import CommandArg
 from nonebot.matcher import Matcher
 from nonebot.adapters import Message
@@ -6,8 +6,8 @@ from numpy.random import default_rng
 
 _r = default_rng()
 
-reverberation = on_command("reverberation", aliases={"复读", "回声", }, block=True)
-calamityclub = on_command("calamityclub", aliases={"灾厄社", "灾厄社频道", "私货"}, block=True)
+reverberation = on_command("reverberation", aliases={"复读", "回声", })
+calamityclub = on_command("calamityclub", aliases={"灾厄社", "灾厄社频道", "私货"})
 
 
 @reverberation.handle()

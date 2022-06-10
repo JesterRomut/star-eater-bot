@@ -1,4 +1,4 @@
-from nonebot import on_command
+from ..misc import on_command
 from nonebot.matcher import Matcher
 from nonebot.params import CommandArg, Depends
 from ..locale import Localisation
@@ -7,7 +7,7 @@ from nonebot.adapters import Message
 # with open(f"{config.static_dir}/storage/help.json", "r", encoding="UTF-8") as f:
 #     helpmsg = loads(f.read())
 
-helpcommand = on_command("help", aliases={"usage", "帮助", "使用帮助", "说明", "使用说明", "使用方法"}, block=True)
+helpcommand = on_command("help", aliases={"usage", "帮助", "使用帮助", "说明", "使用说明", "使用方法"})
 
 
 def _get_msg(locale: Localisation):

@@ -1,9 +1,9 @@
 from nonebot.log import logger
-from nonebot import on_request,  get_driver
+from nonebot import get_driver
+from ..misc import on_request
 from nonebot.adapters.onebot.v11.event import FriendRequestEvent, GroupRequestEvent
 from nonebot.adapters.onebot.v11 import Bot
 from nonebot.adapters.onebot.exception import ActionFailed
-from nonebot.adapters import Event
 
 
 config = get_driver().config

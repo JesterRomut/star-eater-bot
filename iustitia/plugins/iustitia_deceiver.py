@@ -1,5 +1,5 @@
 from numpy.random import default_rng
-from nonebot import on_command
+from ..misc import on_command
 from nonebot.adapters.onebot.v11 import MessageSegment, Bot, Message
 from nonebot.matcher import Matcher
 from nonebot.adapters.onebot.v11 import PrivateMessageEvent, MessageEvent
@@ -9,7 +9,7 @@ from ..locale import Localisation
 
 _r = default_rng()
 
-rwkk = on_command("rwkk", aliases={'嘉登色图', "色图", }, block=True)
+rwkk = on_command("rwkk", aliases={'嘉登色图', "色图", })
 
 
 @rwkk.handle()
