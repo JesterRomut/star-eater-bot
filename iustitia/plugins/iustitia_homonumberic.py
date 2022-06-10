@@ -1,4 +1,4 @@
-from ..misc import on_shell_command
+from ..command import on_shell_command
 from nonebot.params import CommandArg
 from nonebot.matcher import Matcher
 from nonebot.params import ShellCommandArgs, Depends
@@ -19,13 +19,13 @@ async def _(matcher: Matcher, _: ParserExit = ShellCommandArgs(),
             arg: Message = CommandArg(), locale: Localisation = Depends()):
     if arg := arg.extract_plain_text().strip():
         if len(arg) > 125:
-            await matcher.finish(locale["parserexit"]["toolong"])
-        await matcher.finish(locale["parserexit"]["hasarg"].format(arg=arg))
-    await matcher.finish(locale["parserexit"]["hasntarg"])
+            await matcher.finish(locale["homonumberic"]["parserexit"]["toolong"])
+        await matcher.finish(locale["homonumberic"]["parserexit"]["hasarg"].format(arg=arg))
+    await matcher.finish(locale["homonumberic"]["parserexit"]["hasntarg"])
 
 
 @homonumber.handle()
 async def _(matcher: Matcher, args: Namespace = ShellCommandArgs(), locale: Localisation = Depends()):
     if len(str(args.number)) > 9:
-        await matcher.finish(locale["toolong"])
+        await matcher.finish(locale["homonumberic"]["toolong"])
     await matcher.finish(homonumberic(args.number))

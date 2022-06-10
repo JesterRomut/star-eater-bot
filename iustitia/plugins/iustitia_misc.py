@@ -1,23 +1,24 @@
-from ..misc import on_command
-from nonebot.params import CommandArg
+from ..command import on_command
+from nonebot.params import CommandArg, Depends
 from nonebot.matcher import Matcher
 from nonebot.adapters import Message
 from numpy.random import default_rng
+from ..locale import Localisation
 
 _r = default_rng()
 
-reverberation = on_command("reverberation", aliases={"复读", "回声", })
+reverberation = on_command("reverberation", aliases={"echo", "复读", "回声", })
 calamityclub = on_command("calamityclub", aliases={"灾厄社", "灾厄社频道", "私货"})
 
 
 @reverberation.handle()
-async def _(matcher: Matcher, arg: Message = CommandArg()):
+async def _(matcher: Matcher, arg: Message = CommandArg(), locale: Localisation = Depends()):
     if arg := arg.extract_plain_text().strip():
         if len(arg) > 125:
-            await matcher.finish("too long message")
+            await matcher.finish(locale["reverberation"]["toolong"])
         await matcher.finish(arg)
     else:
-        await matcher.finish("invalid message")
+        await matcher.finish(locale["reverberation"]["invalid"])
 
 
 def _random_insert_seq(lst, seq) -> list:

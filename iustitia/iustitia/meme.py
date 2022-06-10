@@ -11,13 +11,9 @@ from functools import partial
 _r = default_rng()
 
 _identifypath = "{}/images/identify".format(config.static_dir)
-# _identifies = listdir(_identifypath)
 
 _fdir = "{}/images/rua/".format(config.static_dir)
 _isize = ((350, 350), (372, 305), (395, 283), (380, 305), (350, 372))
-# ipos = [(50, 150), (28, 195), (5, 217), (5, 195), (50, 128)]
-# ipos = [(60, 160), (38, 205), (15, 227), (15, 205), (60, 138)]
-# (235, 335)
 _ipos = ((60, 150), (49, 195), (38, 217), (45, 195), (60, 128))
 _size = 350
 
@@ -32,10 +28,6 @@ async def _random_file() -> DirEntry:
 
 
 async def random_identify() -> str:
-    # buff = BytesIO()
-    # with Image.open(_random_file().path) as image:
-    #     imgresize(image, 500).convert("RGB").save(buff, 'jpeg')
-    # return b64encode(buff.getvalue()).decode()
     return path.abspath((await _random_file()).path)
 
 

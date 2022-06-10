@@ -7,7 +7,7 @@ from nonebot.rule import ArgumentParser, Namespace
 from nonebot.adapters.onebot.v11 import MessageSegment, Message
 from ..iustitia.meme import custom_identify, random_identify, rua_gif
 from ..iustitia.requests import imageget
-from ..misc import defaultparserexit, on_command, on_shell_command
+from ..command import defaultparserexit, on_command, on_shell_command
 from httpx import HTTPStatusError
 from ..locale import Localisation
 
@@ -49,9 +49,9 @@ async def _getimage(url: str, matcher: Matcher, locale: Localisation):
 
     res, err = await imageget(url)
     if isinstance(err, HTTPStatusError):
-        await matcher.finish(locale["invalid"].format(code=res.status_code))
+        await matcher.finish(locale["meme"]["invalid"].format(code=res.status_code))
     elif err:
-        await matcher.finish(locale["failed"])
+        await matcher.finish(locale["meme"]["failed"])
     return res
 
 
@@ -76,7 +76,7 @@ async def _(matcher: Matcher, args: Namespace = ShellCommandArgs(), locale: Loca
         color = ImageColor.getcolor(_hexstrip(args.color), "RGB")
         border_color = ImageColor.getcolor(_hexstrip(args.border), "RGB") if args.border is not None else None
     except ValueError:
-        await session.finish(locale["invalidcolor"])
+        await matcher.finish(locale["meme"]["invalidcolor"])
 
     if args.title is not None:
         title = args.title

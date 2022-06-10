@@ -8,7 +8,7 @@ from pypinyin import pinyin as _pinyin
 from functools import partial
 from pypinyin import STYLE_FIRST_LETTER
 from pypinyin_dict.phrase_pinyin_data import cc_cedict
-from ..misc import on_command, on_notice, on_message
+from ..command import on_command, on_notice, on_message
 from .iustitia_occult import todaysshylook
 
 cc_cedict.load()

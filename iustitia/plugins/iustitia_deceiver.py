@@ -1,5 +1,5 @@
 from numpy.random import default_rng
-from ..misc import on_command
+from ..command import on_command
 from nonebot.adapters.onebot.v11 import MessageSegment, Bot, Message
 from nonebot.matcher import Matcher
 from nonebot.adapters.onebot.v11 import PrivateMessageEvent, MessageEvent
@@ -15,7 +15,7 @@ rwkk = on_command("rwkk", aliases={'嘉登色图', "色图", })
 @rwkk.handle()
 async def _(matcher: Matcher, event: MessageEvent, bot: Bot,
             locale: Localisation = Depends()):
-    chosen = _r.choice(locale["namelist"])
+    chosen = _r.choice(locale["deceiver"]["namelist"])
     res = MessageSegment.share(
         url="https://www.youtube.com/watch?v=dQw4w9WgXcQ",
         title=chosen + " [4K 60FPS]",
@@ -30,6 +30,6 @@ async def _(matcher: Matcher, event: MessageEvent, bot: Bot,
     try:
         await bot.send_private_msg(user_id=event.user_id, message=Message([res]))
     except ActionFailed:
-        await matcher.finish(locale["mustfriend"])
+        await matcher.finish(locale["deceiver"]["mustfriend"])
     else:
-        await matcher.finish(MessageSegment.text(locale["success"]), at_sender=True)
+        await matcher.finish(MessageSegment.text(locale["deceiver"]["success"]), at_sender=True)

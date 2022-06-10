@@ -1,4 +1,4 @@
-from ..misc import on_command
+from ..command import on_command
 from nonebot.matcher import Matcher
 from nonebot.params import CommandArg, Depends
 from ..locale import Localisation
@@ -15,14 +15,14 @@ def _get_msg(locale: Localisation):
     #     # guild
     #     r = "\n".join(locale["help"]["guild"])
     # else:
-    return "\n".join(locale["help"]["onebot"])
+    return "\n".join(locale["helpcommand"]["help"]["onebot"])
 
 
 @helpcommand.handle()
 async def _(matcher: Matcher, arg: Message = CommandArg(), locale: Localisation = Depends()):
     if arg := arg.extract_plain_text().strip().lower():
         try:
-            res = "\n".join(locale["plugin"][arg])
+            res = "\n".join(locale["helpcommand"]["help"]["plugin"][arg])
         except KeyError:
             res = _get_msg(locale)
     else:

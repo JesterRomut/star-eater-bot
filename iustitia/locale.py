@@ -1,7 +1,7 @@
 from nonebot.adapters.onebot.v11 import MessageEvent, GroupMessageEvent
 from nonebot.matcher import Matcher
 from nonebot.exception import FinishedException
-from .iustitia.locale import locale
+from .iustitia.locale import locale as _locale
 from typing import Union, Callable, Any
 from ujson import load
 from pydantic import BaseModel
@@ -52,4 +52,4 @@ class Localisation(dict):
 
         _check_data(_check, event)
 
-        super().__init__(locale[arg["locale"]]["plugin"][matcher.plugin_name])
+        super().__init__(_locale[arg["locale"]])

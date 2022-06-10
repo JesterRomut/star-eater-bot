@@ -2,7 +2,7 @@ from nonebot.adapters.onebot.v11 import MessageSegment
 from nonebot.matcher import Matcher
 from nonebot.adapters.onebot.v11 import MessageEvent
 from ..iustitia.ahegao import AhegaoSource
-from ..misc import on_command
+from ..command import on_command
 
 
 class AhegaoCommand(AhegaoSource):

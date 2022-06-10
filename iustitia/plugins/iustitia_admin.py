@@ -8,7 +8,7 @@ from nonebot.adapters.onebot.exception import ActionFailed
 from nonebot.adapters import Message
 from os import path
 from shutil import make_archive
-from ..misc import defaultparserexit, on_admin_command, on_admin_shell_command
+from ..command import defaultparserexit, on_admin_command, on_admin_shell_command
 
 config = get_driver().config
 

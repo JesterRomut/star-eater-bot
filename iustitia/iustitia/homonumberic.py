@@ -1,6 +1,40 @@
 from collections import OrderedDict
 from functools import lru_cache
-import re
+from re import sub
+
+
+def _getmindiv(num) -> int:
+    for i in _numbers.keys():
+        if num >= (n := int(i)):
+            return n
+
+
+@lru_cache
+def _homonumberic(num: int) -> str:
+    if num < 0:
+        # return `(⑨) * (${demolish(num * -1)})`.replace( /\ * \(1\) / g, "")
+        if num == -1:
+            return "(11-4-5+1-4)"
+        tmp = sub(r"\*\(1\)", "", "(11-4-5+1-4)*({})".format(_homonumberic(num * -1)))
+        # return re.sub(r"\d+|⑨", lambda m: _numbers[m.group(0)], tmp)
+        return tmp
+    if n := _numbers.get(str(num), False):
+        return n
+    div = _getmindiv(num)
+    # (`${div}*(${demolish(Math.floor(num / div))})+` + `(${demolish(num % div)})`)
+    return sub(
+        r"\*\(1\)|\+\(0\)$", "",
+        "{}*({})+({})".format(
+            _numbers[str(div)],
+            _homonumberic(num // div),
+            _homonumberic(num % div)
+        )
+    )
+
+
+def homonumberic(num: int) -> str:
+    return _homonumberic(num)
+
 
 _numbers = OrderedDict({
     "114514": "114514",
@@ -524,36 +558,3 @@ _numbers = OrderedDict({
     "0": "(1-1)*4514",
     "⑨": "11-4-5+1-4",
 })
-
-
-def _getmindiv(num) -> int:
-    for i in _numbers.keys():
-        if num >= (n := int(i)):
-            return n
-
-
-@lru_cache
-def _homonumberic(num: int) -> str:
-    if num < 0:
-        # return `(⑨) * (${demolish(num * -1)})`.replace( /\ * \(1\) / g, "")
-        if num == -1:
-            return "(11-4-5+1-4)"
-        tmp = re.sub(r"\*\(1\)", "", "(11-4-5+1-4)*({})".format(_homonumberic(num * -1)))
-        # return re.sub(r"\d+|⑨", lambda m: _numbers[m.group(0)], tmp)
-        return tmp
-    if n := _numbers.get(str(num), False):
-        return n
-    div = _getmindiv(num)
-    # (`${div}*(${demolish(Math.floor(num / div))})+` + `(${demolish(num % div)})`)
-    return re.sub(
-        r"\*\(1\)|\+\(0\)$", "",
-        "{}*({})+({})".format(
-            _numbers[str(div)],
-            _homonumberic(num // div),
-            _homonumberic(num % div)
-        )
-    )
-
-
-def homonumberic(num: int) -> str:
-    return _homonumberic(num)
