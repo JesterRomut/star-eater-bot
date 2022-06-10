@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import sys
+sys.path.append("iustitia/plugins")
+
 import nonebot
 from nonebot.adapters.onebot.v11 import Adapter as OneBot_Adapter
 from nonebot.adapters.qqguild import Adapter as QQGuild_Adapter
@@ -23,7 +26,6 @@ driver.register_adapter(OneBot_Adapter)
 driver.register_adapter(QQGuild_Adapter)
 
 iustitia.config = driver.config
-
 
 # Please DO NOT modify this file unless you know what you are doing!
 # As an alternative, you should use command `nb` or modify `pyproject.toml` to load plugins

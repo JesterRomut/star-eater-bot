@@ -1,6 +1,7 @@
-from nonebot import on_command
+from nonebot import on_command, export
 from nonebot.matcher import Matcher
-from nonebot.adapters.onebot.v11 import GroupMessageEvent, MessageEvent
+from nonebot.adapters.onebot.v11 import GroupMessageEvent, MessageEvent, Bot
+from nonebot.typing import T_State
 from nonebot.params import CommandArg, Depends
 from nonebot.adapters import Message
 from ..iustitia.occult import shylook, answers
@@ -8,6 +9,8 @@ from ..locale import Localisation
 
 todaysshylook = on_command("todaysshylook", aliases={"jrrp", "luck", "shylook", "今日人品"}, block=True)
 answersbook = on_command("answersbook", aliases={"answers", "答案之书", "答案", "翻看答案", }, block=True)
+
+export().todaysshylook = todaysshylook
 
 
 @todaysshylook.handle()
