@@ -35,17 +35,17 @@ rua.append_handler(defaultparserexit)
 @identify.handle()  # .identify
 async def _(matcher: Matcher):
     await matcher.finish(
-        MessageSegment.image(file=f"base64://{random_identify()}")
+        MessageSegment.image(file="file:///{}".format(await random_identify()))
     )
 
 
-async def _getimage(murl: Message, matcher: Matcher, locale: Localisation):
-    for ms in murl:
+async def _getimage(url: str, matcher: Matcher, locale: Localisation):
+    for ms in Message(url):
         if ms.type == "image":
             url = ms.data["url"]
             break
     else:
-        url = str(args.url).strip()
+        url = str(url).strip()
 
     res, err = await imageget(url)
     if isinstance(err, HTTPStatusError):
@@ -86,7 +86,7 @@ async def _(matcher: Matcher, args: Namespace = ShellCommandArgs(), locale: Loca
     # request
     if args.image is not None:
         # get url
-        res = await _getimage(Message(args.image), matcher, locale)
+        res = await _getimage(args.image, matcher, locale)
         headimage = Image.open(BytesIO(res.content))
 
     img = await custom_identify(title=title, desc=result, color=color, border=border_color, headimage=headimage)
@@ -98,7 +98,7 @@ async def _(matcher: Matcher, args: Namespace = ShellCommandArgs(), locale: Loca
 
 @rua.handle()
 async def _(matcher: Matcher, args: Namespace = ShellCommandArgs(), locale: Localisation = Depends()):
-    res = await _getimage(Message(args.url), matcher, locale)
+    res = await _getimage(args.url, matcher, locale)
 
     with Image.open(BytesIO(res.content)) as rimg:
         rimage = rimg.convert("RGBA")

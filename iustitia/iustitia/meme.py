@@ -3,7 +3,7 @@ from . import config
 from .image import imgresize
 from io import BytesIO
 from base64 import b64encode
-from os import listdir, path
+from os import path, scandir, DirEntry
 from numpy.random import default_rng
 from typing import Optional
 from functools import partial
@@ -11,7 +11,7 @@ from functools import partial
 _r = default_rng()
 
 _identifypath = "{}/images/identify".format(config.static_dir)
-_identifies = listdir(_identifypath)
+# _identifies = listdir(_identifypath)
 
 _fdir = "{}/images/rua/".format(config.static_dir)
 _isize = ((350, 350), (372, 305), (395, 283), (380, 305), (350, 372))
@@ -22,11 +22,21 @@ _ipos = ((60, 150), (49, 195), (38, 217), (45, 195), (60, 128))
 _size = 350
 
 
-def random_identify() -> str:
-    buff = BytesIO()
-    with Image.open("{}/{}".format(_identifypath, _r.choice(_identifies))) as image:
-        imgresize(image, 500).save(buff, 'jpeg')
-    return b64encode(buff.getvalue()).decode()
+async def _random_file() -> DirEntry:
+    n, res = 0, None
+    for file in scandir(_identifypath):
+        n += 1
+        if _r.uniform(0, n) < 1:
+            res = file
+    return res
+
+
+async def random_identify() -> str:
+    # buff = BytesIO()
+    # with Image.open(_random_file().path) as image:
+    #     imgresize(image, 500).convert("RGB").save(buff, 'jpeg')
+    # return b64encode(buff.getvalue()).decode()
+    return path.abspath((await _random_file()).path)
 
 
 #

@@ -20,7 +20,7 @@ pinyin = partial(_pinyin, style=STYLE_FIRST_LETTER, heteronym=True, strict=True,
 
 nlp = on_message(block=True, priority=100)
 nlp_c = on_command("", block=True, priority=99)
-poke = on_notice(rule=lambda event: isinstance(event, PokeNotifyEvent))
+poke = on_notice(rule=lambda event: isinstance(event, PokeNotifyEvent), block=True)
 todaysshylook = require("iustitia_occult").todaysshylook
 
 
