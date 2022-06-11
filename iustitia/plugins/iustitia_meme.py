@@ -2,14 +2,14 @@ from io import BytesIO
 from PIL import Image, ImageColor
 from nonebot import get_driver
 from nonebot.matcher import Matcher
-from nonebot.params import ShellCommandArgs, Depends
+from nonebot.params import ShellCommandArgs
 from nonebot.rule import ArgumentParser, Namespace
 from nonebot.adapters.onebot.v11 import MessageSegment, Message
 from ..iustitia.meme import custom_identify, random_identify, rua_gif
 from ..iustitia.requests import imageget
 from ..command import defaultparserexit, on_command, on_shell_command
 from httpx import HTTPStatusError
-from ..locale import Localisation
+from ..locale import Localisation, Locale
 
 
 config = get_driver().config
@@ -60,7 +60,7 @@ def _hexstrip(c):
 
 
 @customidentify.handle()
-async def _(matcher: Matcher, args: Namespace = ShellCommandArgs(), locale: Localisation = Depends()):
+async def _(matcher: Matcher, args: Namespace = ShellCommandArgs(), locale: Localisation = Locale()):
     # stop if too long
     if len(args.result) > 125:
         await session.finish("too long message")
@@ -97,7 +97,7 @@ async def _(matcher: Matcher, args: Namespace = ShellCommandArgs(), locale: Loca
 
 
 @rua.handle()
-async def _(matcher: Matcher, args: Namespace = ShellCommandArgs(), locale: Localisation = Depends()):
+async def _(matcher: Matcher, args: Namespace = ShellCommandArgs(), locale: Localisation = Locale()):
     res = await _getimage(args.url, matcher, locale)
 
     with Image.open(BytesIO(res.content)) as rimg:

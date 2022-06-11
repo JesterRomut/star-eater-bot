@@ -1,9 +1,9 @@
 from ..command import on_command
-from nonebot.params import CommandArg, Depends
+from nonebot.params import CommandArg
 from nonebot.matcher import Matcher
 from nonebot.adapters import Message
 from numpy.random import default_rng
-from ..locale import Localisation
+from ..locale import Locale, Localisation
 
 _r = default_rng()
 
@@ -12,7 +12,7 @@ calamityclub = on_command("calamityclub", aliases={"灾厄社", "灾厄社频道
 
 
 @reverberation.handle()
-async def _(matcher: Matcher, arg: Message = CommandArg(), locale: Localisation = Depends()):
+async def _(matcher: Matcher, arg: Message = CommandArg(), locale: Localisation = Locale()):
     if arg := arg.extract_plain_text().strip():
         if len(arg) > 125:
             await matcher.finish(locale["reverberation"]["toolong"])
@@ -23,10 +23,11 @@ async def _(matcher: Matcher, arg: Message = CommandArg(), locale: Localisation 
 
 def _random_insert_seq(lst, seq) -> list:
     inp = iter(lst)
+    inserts = dict(zip(
+        _r.choice(range(len(lst) + len(seq)), len(seq), replace=False),
+        seq))
     lst[:] = [inserts[pos] if pos in (
-        inserts := dict(zip(
-            _r.choice(range(len(lst) + len(seq)), len(seq), replace=False),
-            seq))
+        inserts
     ) else next(inp)
               for pos in range(len(lst) + len(seq))]
     return lst
@@ -41,5 +42,4 @@ async def _(matcher: Matcher):
           "输入链接加入 QQ 频道【Pony Town灾厄社】: \n\n" \
           f"{url}\n\n" \
           "现在入社领免费泰灾法银批字辈身份, 抢先体验机甲混战和 bug 混战, 还送大怨种代弓老大!"
-
     await matcher.finish(res)

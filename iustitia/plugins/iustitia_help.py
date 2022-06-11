@@ -1,7 +1,7 @@
 from ..command import on_command
 from nonebot.matcher import Matcher
-from nonebot.params import CommandArg, Depends
-from ..locale import Localisation
+from nonebot.params import CommandArg
+from ..locale import Localisation, Locale
 from nonebot.adapters import Message
 
 # with open(f"{config.static_dir}/storage/help.json", "r", encoding="UTF-8") as f:
@@ -19,7 +19,7 @@ def _get_msg(locale: Localisation):
 
 
 @helpcommand.handle()
-async def _(matcher: Matcher, arg: Message = CommandArg(), locale: Localisation = Depends()):
+async def _(matcher: Matcher, arg: Message = CommandArg(), locale: Localisation = Locale()):
     if arg := arg.extract_plain_text().strip().lower():
         try:
             res = "\n".join(locale["helpcommand"]["help"]["plugin"][arg])
