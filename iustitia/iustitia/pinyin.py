@@ -10,6 +10,8 @@ pinyin = partial(_pinyin, style=STYLE_FIRST_LETTER, heteronym=True, strict=True,
 
 
 class Match:
+    __slots__ = ("status", "st", "pn", "start", "end")
+    
     def __init__(
             self, status: bool,
             st: str = "",
@@ -17,11 +19,11 @@ class Match:
             start: int = 0,
             end: int = 0
     ):
-        self.status = status
-        self.st = st
-        self.pn = pn
-        self.start = start
-        self.end = end
+        self.status: bool = status
+        self.st: str = st
+        self.pn: Optional[list[list[str]]] = pn
+        self.start: int = start
+        self.end: int = end
 
     def __bool__(self) -> bool:
         return self.status

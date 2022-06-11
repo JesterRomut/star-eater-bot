@@ -78,7 +78,7 @@ async def custom_identify(title: str, desc: str, color: tuple,
         return b64encode(buff.getvalue()).decode()
 
 
-async def _make_rua_frame(img, idx):
+async def _make_rua_frame(img, idx) -> Image.Image:
     with Image.new(mode="RGBA", size=(500, 500)) as frame:
         with Image.open(path.join(_fdir, "{}.png".format(idx + 1))) as hand:
             hand = hand.convert("RGBA")

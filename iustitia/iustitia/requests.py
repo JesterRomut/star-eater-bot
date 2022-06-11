@@ -5,7 +5,7 @@ from httpx import AsyncClient, HTTPError, Response
 _ua = UserAgent(fallback='Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:24.0) Gecko/20100101 Firefox/24.0')
 
 
-def get_ua():
+def get_ua() -> dict:
     return {
         "Accept": "image/*",
         "User-Agent": _ua.random,

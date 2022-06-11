@@ -3,7 +3,7 @@ from functools import lru_cache
 from re import sub
 
 
-def _getmindiv(num) -> int:
+def _getmindiv(num: int) -> int:
     for i in _numbers.keys():
         if num >= (n := int(i)):
             return n

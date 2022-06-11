@@ -17,8 +17,7 @@ async def _(matcher: Matcher, arg: Message = CommandArg(), locale: Localisation 
         if len(arg) > 125:
             await matcher.finish(locale["reverberation"]["toolong"])
         await matcher.finish(arg)
-    else:
-        await matcher.finish(locale["reverberation"]["invalid"])
+    await matcher.finish(locale["reverberation"]["invalid"])
 
 
 def _random_insert_seq(lst, seq) -> list:

@@ -109,7 +109,7 @@ async def _(matcher: Matcher, bot: Bot, event: MessageEvent,
         await matcher.finish("successfully sent message to %s:%s" % (msgtype, msgid))
 
 
-async def _sendmsg(b, msg, u):
+async def _sendmsg(b: Bot, msg: str, u: int):
     try:
         await b.send_private_msg(message=msg, user_id=u)
     except ActionFailed:
