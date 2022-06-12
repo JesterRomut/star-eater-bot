@@ -9,6 +9,7 @@ from ..iustitia.meme import custom_identify, random_identify, rua_gif
 from ..iustitia.requests import imageget
 from ..command import defaultparserexit, on_command, on_shell_command
 from httpx import HTTPStatusError
+from asyncio import create_task
 from ..locale import Localisation, Locale
 
 
@@ -59,6 +60,9 @@ def _hexstrip(c):
     return "#" + c if c[0] != "#" else c
 
 
+async def _none(): return
+
+
 @customidentify.handle()
 async def _(matcher: Matcher, args: Namespace = ShellCommandArgs(), locale: Localisation = Locale()):
     # stop if too long
@@ -67,10 +71,14 @@ async def _(matcher: Matcher, args: Namespace = ShellCommandArgs(), locale: Loca
 
     # init args
     title = None
-    headimage = None
+    # headimage = None
     color = None
     border_color = None
     result = "鉴定为: {}".format(args.result)
+
+    getimage = create_task(
+        _getimage(args.image, matcher, locale) if args.image else _none()
+    )
 
     try:
         color = ImageColor.getcolor(_hexstrip(args.color), "RGB")
@@ -78,16 +86,14 @@ async def _(matcher: Matcher, args: Namespace = ShellCommandArgs(), locale: Loca
     except ValueError:
         await matcher.finish(locale["meme"]["invalidcolor"])
 
-    if args.title is not None:
+    if args.title:
         title = args.title
         if title[-2::1] != "丁真":
             title += "丁真"
 
     # request
-    if args.image is not None:
-        # get url
-        res = await _getimage(args.image, matcher, locale)
-        headimage = Image.open(BytesIO(res.content))
+    res = await getimage
+    headimage = Image.open(BytesIO(res.content)) if res else None
 
     img = await custom_identify(title=title, desc=result, color=color, border=border_color, headimage=headimage)
     await matcher.finish(
@@ -101,8 +107,6 @@ async def _(matcher: Matcher, args: Namespace = ShellCommandArgs(), locale: Loca
     res = await _getimage(args.url, matcher, locale)
 
     with Image.open(BytesIO(res.content)) as rimg:
-        rimage = rimg.convert("RGBA")
-
-        g = await rua_gif(rimage)
-
+        rimg = rimg.convert("RGBA")
+        g = rua_gif(rimg)
     await matcher.finish(MessageSegment.image("base64://{}".format(g)), at_sender=True)

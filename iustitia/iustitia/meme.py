@@ -7,6 +7,7 @@ from os import path, scandir, DirEntry
 from numpy.random import default_rng
 from typing import Optional
 from functools import partial
+from concurrent.futures import ThreadPoolExecutor
 
 _r = default_rng()
 
@@ -33,7 +34,7 @@ async def random_identify() -> str:
 
 #
 # @jit
-async def _get_size(target_width: int, font_dir: str, desc: str) -> int:
+def _get_size(target_width: int, font_dir: str, desc: str) -> int:
     s = 0
     while True:
         f = ImageFont.truetype(font_dir, s)
@@ -43,11 +44,11 @@ async def _get_size(target_width: int, font_dir: str, desc: str) -> int:
     return s
 
 
-async def custom_identify(title: str, desc: str, color: tuple,
-                          border: Optional[tuple] = None, headimage: Optional[Image.Image] = None) -> str:
+def _custom_identify(title: str, desc: str, color: tuple,
+                     border: Optional[tuple] = None, headimage: Optional[Image.Image] = None) -> str:
+    font_dir = "{}/fonts/NotoSansSC-Regular.otf".format(config.static_dir)
     # img process
     with Image.open("{}/images/customidentify.JPG".format(config.static_dir)) as image:
-        font_dir = "{}/fonts/NotoSansSC-Regular.otf".format(config.static_dir)
         draw = ImageDraw.ImageDraw(image)
 
         addfont = partial(draw.text, fill=color, anchor="ms", stroke_width=5 if border else 0, stroke_fill=border)
@@ -59,10 +60,13 @@ async def custom_identify(title: str, desc: str, color: tuple,
             addfont(xy=(540, 1050), text=title, font=font_title)
         else:
             y = 1200
-        font_result = ImageFont.truetype(font_dir, await _get_size(1000, font_dir, desc))
+
+        font_result = ImageFont.truetype(font_dir, _get_size(1000, font_dir, desc))
         addfont(xy=(540, y), text=desc, font=font_result)
+
         # head image
-        if headimage is not None:
+        if headimage:
+            # headimage = Image.open(BytesIO(headimage.content))
             with headimage:
                 pos = (530, 622,)
                 headstrip = headimage.convert('RGBA')
@@ -71,6 +75,7 @@ async def custom_identify(title: str, desc: str, color: tuple,
                 image.paste(headstrip,
                             box=(pos[0] - w // 2, pos[1] - h // 2),
                             mask=headstrip.split()[3])
+
         buff = BytesIO()
         (image.resize(
             size=map(lambda x: x // 4, image.size),
@@ -78,7 +83,19 @@ async def custom_identify(title: str, desc: str, color: tuple,
         return b64encode(buff.getvalue()).decode()
 
 
-async def _make_rua_frame(img, idx) -> Image.Image:
+async def custom_identify(title: str, desc: str, color: tuple,
+                          border: Optional[tuple] = None, headimage: Optional[Image.Image] = None) -> str:
+    with ThreadPoolExecutor(max_workers=100) as executor:
+        future = executor.submit(_custom_identify,
+                                 title=title,
+                                 desc=desc,
+                                 color=color,
+                                 border=border,
+                                 headimage=headimage)
+    return future.result()
+
+
+def _make_rua_frame(img, idx) -> Image.Image:
     with Image.new(mode="RGBA", size=(500, 500)) as frame:
         with Image.open(path.join(_fdir, "{}.png".format(idx + 1))) as hand:
             hand = hand.convert("RGBA")
@@ -91,14 +108,15 @@ async def _make_rua_frame(img, idx) -> Image.Image:
         return frame
 
 
-async def rua_gif(i: Image.Image) -> str:
-    gif = []
+def rua_gif(i: Image.Image) -> str:
     with Image.new(mode="RGBA", size=(_size, _size)) as image:
-        with i:
-            i = imgresize(i.convert("RGBA"), _size)
-            image.paste(i, tuple(map(lambda x: (_size - x) // 2, i.size)), mask=i.split()[3])
-            for a in range(5):
-                gif.append(await _make_rua_frame(image, a))
+        i = imgresize(i.convert("RGBA"), _size)
+        image.paste(i, tuple(map(lambda x: (_size - x) // 2, i.size)), mask=i.split()[3])
+
+        with ThreadPoolExecutor(max_workers=100) as executor:
+            futures = [executor.submit(_make_rua_frame, img=image, idx=a) for a in range(5)]
+
+    gif = [f.result() for f in futures]
 
     buff = BytesIO()
     gif[0].save(fp=buff, format="gif", save_all=True, append_images=gif, optimize=True,

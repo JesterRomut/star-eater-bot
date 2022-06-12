@@ -48,11 +48,11 @@ class Localisation(Mapping):
     def __init__(self, event: Event):
         arg = {"locale": "zh"}
 
-        def _check(data: Setting):
-            if data.lang:
-                arg["locale"] = data.lang
-
-        _check_data(_check, event)
+        # def _check(data: Setting):
+        #     if data.lang:
+        #         arg["locale"] = data.lang
+        #
+        # _check_data(_check, event)
 
         self._dict = dict(_locale[arg["locale"]])
         self._hash = None
