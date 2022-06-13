@@ -15,7 +15,7 @@ def _homonumberic(num: int) -> str:
         # return `(⑨) * (${demolish(num * -1)})`.replace( /\ * \(1\) / g, "")
         if num == -1:
             return "(11-4-5+1-4)"
-        tmp = sub(r"\*\(1\)", "", "(11-4-5+1-4)*({})".format(_homonumberic(num * -1)))
+        tmp = sub(r"\*\(1\)", "", f"(11-4-5+1-4)*({_homonumberic(num * -1)})")
         # return re.sub(r"\d+|⑨", lambda m: _numbers[m.group(0)], tmp)
         return tmp
     if n := _numbers.get(str(num), False):
@@ -24,11 +24,7 @@ def _homonumberic(num: int) -> str:
     # (`${div}*(${demolish(Math.floor(num / div))})+` + `(${demolish(num % div)})`)
     return sub(
         r"\*\(1\)|\+\(0\)$", "",
-        "{}*({})+({})".format(
-            _numbers[str(div)],
-            _homonumberic(num // div),
-            _homonumberic(num % div)
-        )
+        f"{_numbers[str(div)],}*({_homonumberic(num // div),})+({_homonumberic(num % div)})"
     )
 
 

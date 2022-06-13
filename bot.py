@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import sys
-sys.path.append("iustitia/plugins")
-
 import nonebot
 from nonebot.adapters.onebot.v11 import Adapter as OneBot_Adapter
 from nonebot.adapters.qqguild import Adapter as QQGuild_Adapter

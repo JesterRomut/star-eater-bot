@@ -14,7 +14,7 @@ class AhegaoCommand(AhegaoSource):
         self.matcher.append_handler(self.handle)
 
     async def handle(self, matcher: Matcher, _: MessageEvent):
-        await matcher.finish(MessageSegment.record(file="file:///{}".format(self.filepath)))
+        await matcher.finish(MessageSegment.record(file=f"file:///{self.filepath}"))
 
 
 commands = (

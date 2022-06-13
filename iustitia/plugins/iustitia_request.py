@@ -35,6 +35,6 @@ async def _(bot: Bot, event: GroupRequestEvent):
     try:
         await event.approve(bot)
     except ActionFailed:
-        logger.warning("Failed join group: %s" % event.group_id)
+        logger.warning(f"Failed join group: {event.group_id}")
     else:
-        logger.info("Joined group: %s" % event.group_id)
+        logger.info(f"Joined group: {event.group_id}")

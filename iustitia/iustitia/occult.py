@@ -3,7 +3,7 @@ from numpy.random import default_rng
 from . import config
 from ujson import load
 
-_answer = load(open("{}/storage/answers.json".format(config.static_dir), "r", encoding="UTF-8"))
+_answer = load(open(f"{config.static_dir}/storage/answers.json", "r", encoding="UTF-8"))
 _r = default_rng()
 
 _luckyNums = (114514, 65535, 1919, 810, 364)

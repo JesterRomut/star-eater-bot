@@ -36,7 +36,7 @@ rua.append_handler(defaultparserexit)
 @identify.handle()  # .identify
 async def _(matcher: Matcher):
     await matcher.finish(
-        MessageSegment.image(file="file:///{}".format(await random_identify()))
+        MessageSegment.image(file=f"file:///{await random_identify()}")
     )
 
 
@@ -98,7 +98,7 @@ async def _(matcher: Matcher, args: Namespace = ShellCommandArgs(), locale: Loca
     img = await custom_identify(title=title, desc=result, color=color, border=border_color, headimage=headimage)
     await matcher.finish(
         # MessageSegment.image(f"base64://{_create_identify(title, result, color, border_color, headimage)}")
-        MessageSegment.image("base64://{}".format(img))
+        MessageSegment.image(f"base64://{img}")
     )
 
 
@@ -109,4 +109,4 @@ async def _(matcher: Matcher, args: Namespace = ShellCommandArgs(), locale: Loca
     with Image.open(BytesIO(res.content)) as rimg:
         rimg = rimg.convert("RGBA")
         g = rua_gif(rimg)
-    await matcher.finish(MessageSegment.image("base64://{}".format(g)), at_sender=True)
+    await matcher.finish(MessageSegment.image(f"base64://{g}"), at_sender=True)
