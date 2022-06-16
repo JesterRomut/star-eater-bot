@@ -19,7 +19,8 @@ async def _(matcher: Matcher, event: MessageEvent,
     else:
         idnum = event.user_id
         name = event.sender.card or event.sender.nickname
-    await matcher.finish(locale["todaysshylook"]["default"].format(name=name, luck=shylook(str(idnum))))
+    # await matcher.finish(locale["todaysshylook"]["default"].format(name=name, luck=shylook(str(idnum))))
+    await matcher.finish(locale["todaysshylook"]["default"] % {"name": name, "luck": shylook(str(idnum))})
 
 
 @answersbook.handle()
@@ -27,7 +28,7 @@ async def _(matcher: Matcher, arg: Message = CommandArg(), locale: Localisation 
     if arg := arg.extract_plain_text().strip():
         if len(arg) > 125:
             await matcher.finish(locale["answersbook"]["toolong"])
-        await matcher.finish(locale["answersbook"]["default"].format(question=arg, answer=answers()))
+        # await matcher.finish(locale["answersbook"]["default"].format(question=arg, answer=answers()))
+        await matcher.finish(locale["answersbook"]["default"] % {"question": arg, "answer": answers()})
     else:
         await matcher.finish(locale["answersbook"]["absent"])
-

@@ -2,7 +2,8 @@ from io import BytesIO
 from PIL import Image, ImageColor
 from nonebot import get_driver
 from nonebot.matcher import Matcher
-from nonebot.params import ShellCommandArgs
+from nonebot.params import ShellCommandArgs, Arg
+from nonebot.exception import ParserExit
 from nonebot.rule import ArgumentParser, Namespace
 from nonebot.adapters.onebot.v11 import MessageSegment, Message
 from ..iustitia.meme import custom_identify, random_identify, rua_gif
@@ -30,7 +31,6 @@ customidentify.append_handler(defaultparserexit)
 _r_parser = ArgumentParser(usage=".rua url:url")
 _r_parser.add_argument("url")
 rua = on_shell_command("rua", parser=_r_parser, aliases={"pet", "摸摸", "摸", "摸一下", "摸摸月亮", })
-rua.append_handler(defaultparserexit)
 
 
 @identify.handle()  # .identify
@@ -40,8 +40,8 @@ async def _(matcher: Matcher):
     )
 
 
-async def _getimage(url: str, matcher: Matcher, locale: Localisation):
-    for ms in Message(url):
+async def _getimage(url: Message, matcher: Matcher, locale: Localisation):
+    for ms in url:
         if ms.type == "image":
             url = ms.data["url"]
             break
@@ -77,7 +77,7 @@ async def _(matcher: Matcher, args: Namespace = ShellCommandArgs(), locale: Loca
     result = "鉴定为: {}".format(args.result)
 
     getimage = create_task(
-        _getimage(args.image, matcher, locale) if args.image else _none()
+        _getimage(Message(args.image), matcher, locale) if args.image else _none()
     )
 
     try:
@@ -103,8 +103,18 @@ async def _(matcher: Matcher, args: Namespace = ShellCommandArgs(), locale: Loca
 
 
 @rua.handle()
-async def _(matcher: Matcher, args: Namespace = ShellCommandArgs(), locale: Localisation = Locale()):
-    res = await _getimage(args.url, matcher, locale)
+async def _(matcher: Matcher, _: ParserExit = ShellCommandArgs(), locale: Localisation = Locale()):
+    await matcher.send(locale["meme"]["needimage"])
+
+
+@rua.handle()
+async def _(matcher: Matcher, args: Namespace = ShellCommandArgs()):
+    matcher.set_arg("image", Message(args.url))
+
+
+@rua.got("image")
+async def _(matcher: Matcher, image: Message = Arg("image"), locale: Localisation = Locale()):
+    res = await _getimage(image, matcher, locale)
 
     with Image.open(BytesIO(res.content)) as rimg:
         rimg = rimg.convert("RGBA")
