@@ -32,6 +32,8 @@ class Match:
     def startswith(st: str, pn: list[list[str]]) -> "Match":
         if not pn:
             return Match(status=False, st=st, pn=pn)
+        if len(pn) < len(st):
+            return Match(status=False, st=st, pn=pn)
         res = Match(status=True, st=st, pn=pn, start=0)
         for i, letter in enumerate(pn):
             try:
