@@ -43,7 +43,7 @@ RUN pip3 install --no-cache-dir --upgrade -r requirements.txt
 
 COPY ./ /app/
 
-EXPOSE 80/tcp
+EXPOSE 10492/tcp
 
 CMD nb run --file=bot.py
 

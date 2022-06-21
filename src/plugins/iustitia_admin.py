@@ -7,7 +7,7 @@ from nonebot.adapters.onebot.v11 import Bot, PrivateMessageEvent, GroupMessageEv
 from nonebot.adapters.onebot.exception import ActionFailed
 from nonebot.adapters import Message
 from os import path
-from shutil import make_archive
+from ..iustitia.backup import dobackup
 from ..command import defaultparserexit, on_admin_command, on_admin_shell_command
 
 config = get_driver().config
@@ -161,12 +161,7 @@ async def _(bot: Bot, event: MessageEvent, matcher: Matcher):
 @backup.handle()
 async def _(matcher: Matcher):
     await matcher.send("starting backup")
-    try:
-        make_archive(r"data\backup", "zip")
-    except Exception as e:
-        await matcher.finish("error: {}".format(e))
-    else:
-        await matcher.finish("success")
+    await matcher.finish(dobackup())
 
 # @ban.handle()
 # async def _(matcher: Matcher, event: Union[PrivateMessageEvent, GroupMessageEvent, GuildMessageEvent],

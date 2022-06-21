@@ -18,18 +18,22 @@ say = on_command("tts", aliases={"说", "棒读", "捧读", "焚音放送"})
 
 
 def _tts(arg, path):
-    tts = ttsinit()
-    _voices = tts.getProperty('voices')
-    for voice in _voices:
-        # print(voice.id, voice.languages)
-        if b"\x05zh" in voice.languages:
-            tts.setProperty("voice", voice.id)
-            break
-    else:
-        logger.warning("Could not find a chinese speaking voice.")
-    tts.save_to_file(arg, path)
-    tts.runAndWait()
-    return tts
+    engine = ttsinit()
+    # _voices = engine.getProperty('voices')
+    # vid = _voices[0].id
+    # for voice in _voices:
+    #     print(voice.id, voice.languages)
+    #     if b"\x05zh" in voice.languages:
+    #         vid = voice.id
+    #         logger.info(f"Match voice: {vid}")
+    #         break
+    # else:
+    #     logger.warning("Could not find a chinese speaking voice.")
+    engine.setProperty("voice", "en+f4")
+    # print(engine.getProperty("voice"))
+    engine.save_to_file(arg, path)
+    engine.runAndWait()
+    return engine
 
 
 @say.handle()
