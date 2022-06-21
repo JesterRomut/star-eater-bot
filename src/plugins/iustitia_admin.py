@@ -162,7 +162,7 @@ async def _(bot: Bot, event: MessageEvent, matcher: Matcher):
 async def _(matcher: Matcher):
     await matcher.send("starting backup")
     try:
-        make_archive(r"..\..\backup", "zip")
+        make_archive(r"data\backup", "zip")
     except Exception as e:
         await matcher.finish("error: {}".format(e))
     else:

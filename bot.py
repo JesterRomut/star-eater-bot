@@ -2,8 +2,7 @@
 # -*- coding: utf-8 -*-
 import nonebot
 from nonebot.adapters.onebot.v11 import Adapter as OneBot_Adapter
-from nonebot.adapters.qqguild import Adapter as QQGuild_Adapter
-import iustitia.iustitia as iustitia
+import src.iustitia as iustitia
 
 # Custom your logger
 # 
@@ -16,11 +15,10 @@ import iustitia.iustitia as iustitia
 
 # You can pass some keyword args config to init function
 nonebot.init()
-# app = nonebot.get_asgi()
+app = nonebot.get_asgi()
 
 driver = nonebot.get_driver()
 driver.register_adapter(OneBot_Adapter)
-driver.register_adapter(QQGuild_Adapter)
 
 iustitia.config = driver.config
 

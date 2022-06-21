@@ -3,7 +3,7 @@ from . import config
 from .image import imgresize
 from io import BytesIO
 from base64 import b64encode
-from os import path, scandir, DirEntry
+from os import path, listdir
 from numpy.random import default_rng
 from typing import Optional
 from functools import partial
@@ -19,17 +19,19 @@ _ipos = ((60, 150), (49, 195), (38, 217), (45, 195), (60, 128))
 _size = 350
 
 
-async def _random_file() -> DirEntry:
-    n, res = 0, None
-    for file in scandir(_identifypath):
-        n += 1
-        if _r.uniform(0, n) < 1:
-            res = file
-    return res
+# async def _random_file() -> DirEntry:
+#     n, res = 0, None
+#     for file in scandir(_identifypath):
+#         n += 1
+#         if _r.uniform(0, n) < 1:
+#             res = file
+#     return res
 
 
 async def random_identify() -> str:
-    return path.abspath((await _random_file()).path)
+    with open(_r.choice(listdir(_identifypath)), "rb") as file:
+        res = file.read()
+    return b64encode(res).decode()
 
 
 #
@@ -83,7 +85,7 @@ def _custom_identify(title: str, desc: str, color: tuple,
 
 async def custom_identify(title: str, desc: str, color: tuple,
                           border: Optional[tuple] = None, headimage: Optional[Image.Image] = None) -> str:
-    with ThreadPoolExecutor(max_workers=100) as executor:
+    with ThreadPoolExecutor(max_workers=20) as executor:
         future = executor.submit(_custom_identify,
                                  title=title,
                                  desc=desc,
@@ -111,7 +113,7 @@ def rua_gif(i: Image.Image) -> str:
         i = imgresize(i.convert("RGBA"), _size)
         image.paste(i, ((_size - i.size[0])//2, (_size - i.size[1])//2), mask=i.split()[3])
 
-        with ThreadPoolExecutor(max_workers=100) as executor:
+        with ThreadPoolExecutor(max_workers=20) as executor:
             futures = [executor.submit(_make_rua_frame, img=image, idx=a) for a in range(5)]
 
     gif = [f.result() for f in futures]

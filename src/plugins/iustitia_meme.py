@@ -36,7 +36,7 @@ rua = on_shell_command("rua", parser=_r_parser, aliases={"pet", "摸摸", "摸",
 @identify.handle()  # .identify
 async def _(matcher: Matcher):
     await matcher.finish(
-        MessageSegment.image(file=f"file:///{await random_identify()}")
+        MessageSegment.image(file=f"base64://{await random_identify()}")
     )
 
 
