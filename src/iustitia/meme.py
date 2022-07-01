@@ -18,6 +18,7 @@ _isize = ((350, 350), (372, 305), (395, 283), (380, 305), (350, 372))
 _ipos = ((60, 150), (49, 195), (38, 217), (45, 195), (60, 128))
 _size = 350
 
+_max_workers: int = config.executor_max_workers
 
 # async def _random_file() -> DirEntry:
 #     n, res = 0, None
@@ -85,7 +86,7 @@ def _custom_identify(title: str, desc: str, color: tuple,
 
 async def custom_identify(title: str, desc: str, color: tuple,
                           border: Optional[tuple] = None, headimage: Optional[Image.Image] = None) -> str:
-    with ThreadPoolExecutor(max_workers=20) as executor:
+    with ThreadPoolExecutor(max_workers=_max_workers) as executor:
         future = executor.submit(_custom_identify,
                                  title=title,
                                  desc=desc,
@@ -113,7 +114,7 @@ def rua_gif(i: Image.Image) -> str:
         i = imgresize(i.convert("RGBA"), _size)
         image.paste(i, ((_size - i.size[0])//2, (_size - i.size[1])//2), mask=i.split()[3])
 
-        with ThreadPoolExecutor(max_workers=20) as executor:
+        with ThreadPoolExecutor(max_workers=_max_workers) as executor:
             futures = [executor.submit(_make_rua_frame, img=image, idx=a) for a in range(5)]
 
     gif = [f.result() for f in futures]

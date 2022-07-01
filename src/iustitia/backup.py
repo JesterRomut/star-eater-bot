@@ -5,11 +5,14 @@ from os.path import join
 from shutil import make_archive
 from functools import reduce
 from concurrent.futures import ThreadPoolExecutor
+from . import config
 
 _os_path_isfile = os.path.isfile
 _curpath = Path(".")
 
 _ignorepath = ".backupignore"
+
+_max_workers: int = config.executor_max_workers
 
 with open(_ignorepath, "r") as f:
     _globs = [line.rstrip() for line in f]
@@ -33,6 +36,6 @@ def _backup() -> str:
 
 
 def dobackup() -> str:
-    with ThreadPoolExecutor(max_workers=20) as executor:
+    with ThreadPoolExecutor(max_workers=_max_workers) as executor:
         future = executor.submit(_backup)
     return future.result()

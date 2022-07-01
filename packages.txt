@@ -1,4 +1,3 @@
-espeak
 zlib-dev
 jpeg-dev
 libjpeg
