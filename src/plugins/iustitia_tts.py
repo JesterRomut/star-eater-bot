@@ -5,7 +5,6 @@ from nonebot.params import CommandArg
 from nonebot.adapters import Message
 from nonebot.matcher import Matcher
 from nonebot.adapters.onebot.v11 import MessageSegment
-from nonebot.log import logger
 from base64 import b64encode
 from os.path import join
 from concurrent.futures import ThreadPoolExecutor

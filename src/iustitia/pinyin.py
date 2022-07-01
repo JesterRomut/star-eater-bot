@@ -6,7 +6,7 @@ from typing import Optional
 
 cc_cedict.load()
 
-pinyin = partial(_pinyin, style=STYLE_FIRST_LETTER, heteronym=True, strict=True, errors="ignore")
+pinyin = partial(_pinyin, style=STYLE_FIRST_LETTER, heteronym=True, strict=True, errors=lambda st:[s for s in st])
 
 
 class Match:

@@ -8,6 +8,8 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+*.pyc
+
 # C extensions
 *.so
 
@@ -145,3 +147,8 @@ dmypy.json
 /static/
 
 /iustitia/plugins/__pycache__/
+/src/plugins/__pycache__/
+/src/iustitia/__pycache__/
+
+.vs/
+.idea/
