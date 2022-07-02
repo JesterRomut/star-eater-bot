@@ -11,7 +11,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 _r = default_rng()
 
-_identifypath = f"{config.static_dir}/images/identify"
+_identifypath = f"{config.static_dir}/images/identify/"
 
 _fdir = f"{config.static_dir}/images/rua/"
 _isize = ((350, 350), (372, 305), (395, 283), (380, 305), (350, 372))
@@ -30,7 +30,7 @@ _max_workers: int = config.executor_max_workers
 
 
 async def random_identify() -> str:
-    with open(_r.choice(listdir(_identifypath)), "rb") as file:
+    with open(path.join(_identifypath, _r.choice(listdir(_identifypath))), "rb") as file:
         res = file.read()
     return b64encode(res).decode()
 

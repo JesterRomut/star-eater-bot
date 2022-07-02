@@ -21,10 +21,11 @@ def _homonumberic(num: int) -> str:
     if n := _numbers.get(str(num), False):
         return n
     div = _getmindiv(num)
+    print(div)
     # (`${div}*(${demolish(Math.floor(num / div))})+` + `(${demolish(num % div)})`)
     return sub(
         r"\*\(1\)|\+\(0\)$", "",
-        f"{_numbers[str(div)],}*({_homonumberic(num // div),})+({_homonumberic(num % div)})"
+        f"{_numbers[str(div)]}*({_homonumberic(num // div)})+({_homonumberic(num % div)})"
     )
 
 
