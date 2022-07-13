@@ -1,0 +1,178 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{51381d96-35ef-48ac-91bc-40fbd12642d8}</ProjectGuid>
+    <ProjectHome />
+    <StartupFile>bot.py</StartupFile>
+    <SearchPath />
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <InterpreterId />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <PropertyGroup>
+    <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="packages.txt" />
+    <Content Include="requirements.txt" />
+    <Content Include="static\images\customidentify.JPG" />
+    <Content Include="static\images\identify\IMG_1083%2820220421-001155%29.JPG" />
+    <Content Include="static\images\identify\IMG_1110%2820220329-214404%29.JPG" />
+    <Content Include="static\images\identify\IMG_1121%2820220421-001155%29.JPG" />
+    <Content Include="static\images\identify\IMG_1187%2820220313-172920%29.JPG" />
+    <Content Include="static\images\identify\IMG_1188%2820220313-172927%29.JPG" />
+    <Content Include="static\images\identify\IMG_1317.JPG" />
+    <Content Include="static\images\identify\IMG_1318%2820220322-233714%29.JPG" />
+    <Content Include="static\images\identify\IMG_1322%2820220322-140928%29.JPG" />
+    <Content Include="static\images\identify\IMG_1323%2820220421-001155%29.JPG" />
+    <Content Include="static\images\identify\IMG_1476%2820220327-005655%29.JPG" />
+    <Content Include="static\images\identify\IMG_1477%2820220421-001201%29.JPG" />
+    <Content Include="static\images\identify\IMG_1478%2820220327-005729%29.JPG" />
+    <Content Include="static\images\identify\IMG_1480%2820220327-005908%29.JPG" />
+    <Content Include="static\images\identify\IMG_1481%2820220421-001155%29.JPG" />
+    <Content Include="static\images\identify\IMG_1482%2820220327-005928%29.JPG" />
+    <Content Include="static\images\identify\IMG_1483%2820220327-005956%29.JPG" />
+    <Content Include="static\images\identify\IMG_1484%2820220327-010034%29.JPG" />
+    <Content Include="static\images\identify\IMG_1485%2820220421-001155%29.JPG" />
+    <Content Include="static\images\identify\IMG_1486%2820220327-010258%29.JPG" />
+    <Content Include="static\images\identify\IMG_1512.JPG" />
+    <Content Include="static\images\identify\IMG_1523%2820220329-123507%29.JPG" />
+    <Content Include="static\images\identify\IMG_1620%2820220401-141552%29.JPG" />
+    <Content Include="static\images\identify\IMG_1628%2820220401-184901%29.JPG" />
+    <Content Include="static\images\identify\IMG_1651%2820220401-201103%29.JPG" />
+    <Content Include="static\images\identify\IMG_1652%2820220421-001155%29.JPG" />
+    <Content Include="static\images\identify\IMG_1655%2820220402-025453%29.JPG" />
+    <Content Include="static\images\identify\IMG_1656%2820220402-025539%29.JPG" />
+    <Content Include="static\images\identify\IMG_1696%2820220403-182856%29.JPG" />
+    <Content Include="static\images\identify\IMG_1841%2820220421-001156%29.JPG" />
+    <Content Include="static\images\identify\IMG_1899%2820220406-194004%29.JPG" />
+    <Content Include="static\images\identify\IMG_1963.JPG" />
+    <Content Include="static\images\identify\IMG_2167%2820220421-001156%29.JPG" />
+    <Content Include="static\images\identify\IMG_2180%2820220420-123131%29.JPG" />
+    <Content Include="static\images\identify\IMG_2181%2820220420-123409%29.JPG" />
+    <Content Include="static\images\identify\IMG_2182%2820220420-123423%29.JPG" />
+    <Content Include="static\images\identify\IMG_2183%2820220420-124135%29.JPG" />
+    <Content Include="static\images\identify\IMG_2184%2820220421-020009%29.JPG" />
+    <Content Include="static\images\identify\IMG_2185%2820220420-124255%29.JPG" />
+    <Content Include="static\images\identify\IMG_2186%2820220420-124306%29.JPG" />
+    <Content Include="static\images\identify\IMG_2187.JPG" />
+    <Content Include="static\images\identify\IMG_2188%2820220420-124533%29.JPG" />
+    <Content Include="static\images\identify\IMG_2202%2820220420-212010%29.JPG" />
+    <Content Include="static\images\identify\IMG_2203.GIF" />
+    <Content Include="static\images\identify\IMG_2204.JPG" />
+    <Content Include="static\images\identify\IMG_2291%2820220424-071925%29.JPG" />
+    <Content Include="static\images\identify\IMG_2292%2820220424-071936%29.JPG" />
+    <Content Include="static\images\identify\IMG_2317%2820220425-134005%29.JPG" />
+    <Content Include="static\images\identify\IMG_2321%2820220425-193344%29.JPG" />
+    <Content Include="static\images\identify\IMG_2322%2820220425-193533%29.JPG" />
+    <Content Include="static\images\identify\IMG_2323%2820220425-194008%29.JPG" />
+    <Content Include="static\images\identify\IMG_2324%2820220425-194027%29.JPG" />
+    <Content Include="static\images\identify\IMG_2325%2820220425-194054%29.JPG" />
+    <Content Include="static\images\identify\IMG_2326%2820220425-194101%29.JPG" />
+    <Content Include="static\images\identify\IMG_2327%2820220425-194114%29.JPG" />
+    <Content Include="static\images\identify\IMG_2343%2820220426-142855%29.JPG" />
+    <Content Include="static\images\identify\IMG_2344%2820220426-142907%29.JPG" />
+    <Content Include="static\images\identify\IMG_2348%2820220426-163337%29.JPG" />
+    <Content Include="static\images\identify\IMG_2350%2820220426-164810%29.JPG" />
+    <Content Include="static\images\identify\IMG_2351%2820220426-184445%29.JPG" />
+    <Content Include="static\images\identify\IMG_2366%2820220426-224222%29.JPG" />
+    <Content Include="static\images\identify\IMG_2381%2820220427-133809%29.JPG" />
+    <Content Include="static\images\identify\IMG_2382%2820220427-133817%29.JPG" />
+    <Content Include="static\images\identify\IMG_2383%2820220427-133819%29.JPG" />
+    <Content Include="static\images\identify\IMG_2384%2820220427-133831%29.JPG" />
+    <Content Include="static\images\identify\IMG_2385%2820220427-133846%29.JPG" />
+    <Content Include="static\images\identify\IMG_2386.JPG" />
+    <Content Include="static\images\identify\IMG_2440%2820220428-140532%29.JPG" />
+    <Content Include="static\images\identify\IMG_2448%2820220428-201254%29.JPG" />
+    <Content Include="static\images\identify\IMG_2449%2820220428-201317%29.JPG" />
+    <Content Include="static\images\identify\IMG_2450%2820220428-201328%29.JPG" />
+    <Content Include="static\images\identify\IMG_2452%2820220428-201337%29.JPG" />
+    <Content Include="static\images\identify\IMG_2453%2820220428-201346%29.JPG" />
+    <Content Include="static\images\identify\IMG_2454%2820220428-201401%29.JPG" />
+    <Content Include="static\images\identify\IMG_2455%2820220428-201432%29.JPG" />
+    <Content Include="static\images\identify\IMG_2456%2820220428-201448%29.JPG" />
+    <Content Include="static\images\identify\IMG_2457%2820220428-201502%29.JPG" />
+    <Content Include="static\images\identify\IMG_2458%2820220428-201506%29.JPG" />
+    <Content Include="static\images\identify\IMG_2459%2820220428-201532%29.JPG" />
+    <Content Include="static\images\identify\IMG_2460%2820220428-201541%29.JPG" />
+    <Content Include="static\images\identify\IMG_2461%2820220428-201542%29.JPG" />
+    <Content Include="static\images\identify\IMG_2462%2820220428-201544%29.JPG" />
+    <Content Include="static\images\identify\IMG_2463%2820220428-201546%29.JPG" />
+    <Content Include="static\images\identify\IMG_2464%2820220428-201549%29.JPG" />
+    <Content Include="static\images\identify\IMG_2465%2820220428-201551%29.JPG" />
+    <Content Include="static\images\identify\IMG_2466%2820220428-201553%29.JPG" />
+    <Content Include="static\images\identify\IMG_2467%2820220428-201556%29.JPG" />
+    <Content Include="static\images\identify\IMG_2468%2820220428-201601%29.JPG" />
+    <Content Include="static\images\identify\IMG_2477%2820220429-154732%29.JPG" />
+    <Content Include="static\images\identify\IMG_2500%2820220501-013047%29.JPG" />
+    <Content Include="static\images\identify\IMG_2563%2820220502-150540%29.JPG" />
+    <Content Include="static\images\identify\IMG_2671%2820220508-194816%29.JPG" />
+    <Content Include="static\images\identify\IMG_2676%2820220508-201215%29.JPG" />
+    <Content Include="static\images\identify\IMG_2697%2820220509-190221%29.JPG" />
+    <Content Include="static\images\identify\IMG_2701%2820220509-194744%29.JPG" />
+    <Content Include="static\images\identify\IMG_2702%2820220509-194759%29.JPG" />
+    <Content Include="static\images\identify\IMG_2703%2820220509-194804%29.JPG" />
+    <Content Include="static\images\identify\IMG_2717.JPG" />
+    <Content Include="static\images\identify\IMG_2721%2820220509-213721%29.JPG" />
+    <Content Include="static\images\identify\IMG_2722%2820220510-012534%29.JPG" />
+    <Content Include="static\images\identify\IMG_2723%2820220509-214057%29.JPG" />
+    <Content Include="static\images\identify\IMG_2724%2820220509-214114%29.JPG" />
+    <Content Include="static\images\identify\IMG_2734.GIF" />
+    <Content Include="static\images\identify\IMG_2736%2820220510-001020%29.JPG" />
+    <Content Include="static\images\identify\IMG_2743.JPG" />
+    <Content Include="static\images\identify\IMG_2744%2820220510-123726%29.JPG" />
+    <Content Include="static\images\identify\IMG_2745%2820220510-125022%29.JPG" />
+    <Content Include="static\images\identify\IMG_3059%2820220523-024521%29.JPG" />
+    <Content Include="static\images\identify\IMG_3060%2820220523-140547%29.JPG" />
+    <Content Include="static\images\identify\IMG_3094%2820220525-193032%29.JPG" />
+    <Content Include="static\images\identify\IMG_3099%2820220526-020407%29.JPG" />
+    <Content Include="static\images\identify\IMG_3546%2820220602-185806%29.JPG" />
+    <Content Include="static\images\identify\IMG_3549%2820220602-191254%29.JPG" />
+    <Content Include="static\images\rua\1.png" />
+    <Content Include="static\images\rua\2.png" />
+    <Content Include="static\images\rua\3.png" />
+    <Content Include="static\images\rua\4.png" />
+    <Content Include="static\images\rua\5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="bot.py" />
+    <Compile Include="src\command.py" />
+    <Compile Include="src\iustitia\ahegao.py" />
+    <Compile Include="src\iustitia\backup.py" />
+    <Compile Include="src\iustitia\homonumberic.py" />
+    <Compile Include="src\iustitia\image.py" />
+    <Compile Include="src\iustitia\locale.py" />
+    <Compile Include="src\iustitia\meme.py" />
+    <Compile Include="src\iustitia\occult.py" />
+    <Compile Include="src\iustitia\pinyin.py" />
+    <Compile Include="src\iustitia\requests.py" />
+    <Compile Include="src\iustitia\__init__.py" />
+    <Compile Include="src\locale.py" />
+    <Compile Include="src\plugins\iustitia_admin.py" />
+    <Compile Include="src\plugins\iustitia_ahegao.py" />
+    <Compile Include="src\plugins\iustitia_deceiver.py" />
+    <Compile Include="src\plugins\iustitia_help.py" />
+    <Compile Include="src\plugins\iustitia_homonumberic.py" />
+    <Compile Include="src\plugins\iustitia_meme.py" />
+    <Compile Include="src\plugins\iustitia_misc.py" />
+    <Compile Include="src\plugins\iustitia_nlp.py" />
+    <Compile Include="src\plugins\iustitia_occult.py" />
+    <Compile Include="src\plugins\iustitia_request.py" />
+    <Compile Include="src\plugins\iustitia_tts.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="src" />
+    <Folder Include="src\iustitia" />
+    <Folder Include="src\plugins" />
+    <Folder Include="static\images" />
+    <Folder Include="static\images\identify" />
+    <Folder Include="static\images\rua" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
+</Project>

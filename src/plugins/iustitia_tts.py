@@ -13,7 +13,7 @@ from typing import Optional
 # _ttsfilename: str = "file.mp3"
 # max_workers: int = get_driver().config.executor_max_workers
 
-say = on_command("tts", aliases={"说", "棒读", "捧读", "焚音放送"})
+say = on_command("tts", aliases={"读", "说", "棒读", "捧读", "焚音放送"})
 
 
 async def _tts(arg) -> Optional[str]:
